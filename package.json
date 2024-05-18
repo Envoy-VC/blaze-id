@@ -1,5 +1,5 @@
 {
-  "name": "web3-turbo-starter",
+  "name": "blaze-id",
   "private": true,
   "scripts": {
     "build": "turbo build",

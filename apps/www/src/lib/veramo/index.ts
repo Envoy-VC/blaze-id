@@ -1,3 +1,1 @@
-import createDID from './create-did';
-
-export { createDID };
+export * from './did';

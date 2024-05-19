@@ -23,6 +23,9 @@ importers:
       '@lit-protocol/types':
         specifier: ^5.1.0
         version: 5.1.0
+      '@passwordless-id/webauthn':
+        specifier: ^1.6.1
+        version: 1.6.1
       '@radix-ui/react-dialog':
         specifier: ^1.0.5
         version: 1.0.5(@types/react-dom@18.3.0)(@types/react@18.3.1)(react-dom@18.2.0)(react@18.2.0)
@@ -38,6 +41,15 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.32.1
         version: 5.32.1(react@18.2.0)
+      '@trpc/client':
+        specifier: next
+        version: 11.0.0-rc.373(@trpc/server@11.0.0-rc.373)
+      '@trpc/react-query':
+        specifier: next
+        version: 11.0.0-rc.373(@tanstack/react-query@5.32.1)(@trpc/client@11.0.0-rc.373)(@trpc/server@11.0.0-rc.373)(react-dom@18.2.0)(react@18.2.0)
+      '@trpc/server':
+        specifier: next
+        version: 11.0.0-rc.373
       '@veramo/core':
         specifier: ^6.0.0
         version: 6.0.0
@@ -116,9 +128,15 @@ importers:
       react-dom:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
+      server-only:
+        specifier: ^0.0.1
+        version: 0.0.1
       sonner:
         specifier: ^1.4.41
         version: 1.4.41(react-dom@18.2.0)(react@18.2.0)
+      superjson:
+        specifier: ^2.2.1
+        version: 2.2.1
       tailwind-merge:
         specifier: ^2.3.0
         version: 2.3.0
@@ -4085,6 +4103,10 @@ packages:
       '@parcel/watcher-win32-x64': 2.4.1
     dev: false
 
+  /@passwordless-id/webauthn@1.6.1:
+    resolution: {integrity: sha512-YQ1ZHU+exsqF1xAdQ1eBEQ3NZrMT4PSHKsaMSA5Oq38esursuH1hhOT2VHDfT/gimlipUfZr2VEs/cfriswT8w==}
+    dev: false
+
   /@peculiar/asn1-schema@2.3.8:
     resolution: {integrity: sha512-ULB1XqHKx1WBU/tTFIA+uARuRoBVZ4pNdOA878RDrRbBfBGcSzi5HBkdScC6ZbHn8z7L8gmKCgPC1LHRrP46tA==}
     requiresBuild: true
@@ -5427,6 +5449,34 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /@trpc/client@11.0.0-rc.373(@trpc/server@11.0.0-rc.373):
+    resolution: {integrity: sha512-DSKOFjpQycJjwLrJWCpMqfwuFCP99QUPBZBeCb94WTvZUb6wGzOZWQMdIj7EnsR9jgWHlPll1e0s7OgAWxBKqw==}
+    peerDependencies:
+      '@trpc/server': 11.0.0-rc.373+db2ec5cae
+    dependencies:
+      '@trpc/server': 11.0.0-rc.373
+    dev: false
+
+  /@trpc/react-query@11.0.0-rc.373(@tanstack/react-query@5.32.1)(@trpc/client@11.0.0-rc.373)(@trpc/server@11.0.0-rc.373)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-yxHlSiuPkoCnEB0W9yzF5eSX6F09/JFsTpdrwyocTg0Z1TaAYkJ0pUVMP1Gb3bKZEou1x6a8ZJJEqKLZbLPXCA==}
+    peerDependencies:
+      '@tanstack/react-query': ^5.25.0
+      '@trpc/client': 11.0.0-rc.373+db2ec5cae
+      '@trpc/server': 11.0.0-rc.373+db2ec5cae
+      react: '>=18.2.0'
+      react-dom: '>=18.2.0'
+    dependencies:
+      '@tanstack/react-query': 5.32.1(react@18.2.0)
+      '@trpc/client': 11.0.0-rc.373(@trpc/server@11.0.0-rc.373)
+      '@trpc/server': 11.0.0-rc.373
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
+  /@trpc/server@11.0.0-rc.373:
+    resolution: {integrity: sha512-i5q1KkQ0fuHqYbEPWMfk2rTp31wde8RKo0jxWfwZU8YsnjaErZ8lFnGCxz252l7mMCqT70IKR6c/N5MEXqChDA==}
+    dev: false
 
   /@trust/keyto@1.0.1:
     resolution: {integrity: sha512-OXTmKkrnkwktCX86XA7eWs1TQ6u64enm0syzAfNhjigbuGLy5aLhbhRYWtjt4zzdG/irWudluheRZ9Ic9pCwsA==}
@@ -8302,6 +8352,13 @@ packages:
     resolution: {integrity: sha512-L2rLOcK0wzWSfSDA33YR+PUHDG10a8px7rUHKWbGLP4YfbsMed2KFUw5fczvDPbT98DDe3LEzviswl810apTEw==}
     dev: false
 
+  /copy-anything@3.0.5:
+    resolution: {integrity: sha512-yCEafptTtb4bk7GLEQoM8KVJpxAfdBJYaXyzQEgQQQgYrZiDp8SJmGKlYza6CYjEDNstAdNdKA3UuoULlEbS6w==}
+    engines: {node: '>=12.13'}
+    dependencies:
+      is-what: 4.1.16
+    dev: false
+
   /core-js-compat@3.37.0:
     resolution: {integrity: sha512-vYq4L+T8aS5UuFg4UwDhc7YNRWVeVZwltad9C/jV3R2LgVOpS9BDr7l/WL6BN0dbV3k1XejPTHqqEzJgsa0frA==}
     dependencies:
@@ -11023,6 +11080,11 @@ packages:
       call-bind: 1.0.7
       get-intrinsic: 1.2.4
     dev: true
+
+  /is-what@4.1.16:
+    resolution: {integrity: sha512-ZhMwEosbFJkA0YhFnNDgTM4ZxDRsS6HqTo7qsZM08fehyRYIYa0yHu5R6mgo1n/8MgaPBXiPimPD77baVFYg+A==}
+    engines: {node: '>=12.13'}
+    dev: false
 
   /is-wsl@1.1.0:
     resolution: {integrity: sha512-gfygJYZ2gLTDlmbWMI0CE2MwnFzSN/2SZfkMlItC4K/JBlsWVDB0bO6XhqcY13YXE7iMcAJnzTCJjPiTeJJ0Mw==}
@@ -14258,6 +14320,10 @@ packages:
       - supports-color
     dev: false
 
+  /server-only@0.0.1:
+    resolution: {integrity: sha512-qepMx2JxAa5jjfzxG79yPPq+8BuFToHd1hm7kI+Z4zAq1ftQiP7HcxMhDDItrbtwVeLg/cY2JnKnrcFkmiswNA==}
+    dev: false
+
   /set-blocking@2.0.0:
     resolution: {integrity: sha512-KiKBS8AnWGEyLzofFfmvKwpdPzqiy16LvQfK3yv/fVH7Bj13/wl3JSR1J+rfgRE9q7xUJK4qvgS8raSOeLUehw==}
     dev: false
@@ -14797,6 +14863,13 @@ packages:
 
   /sudo-prompt@9.2.1:
     resolution: {integrity: sha512-Mu7R0g4ig9TUuGSxJavny5Rv0egCEtpZRNMrZaYS1vxkiIxGiGUwoezU3LazIQ+KE04hTrTfNPgxU5gzi7F5Pw==}
+    dev: false
+
+  /superjson@2.2.1:
+    resolution: {integrity: sha512-8iGv75BYOa0xRJHK5vRLEjE2H/i4lulTjzpUXic3Eg8akftYjkmQDa8JARQ42rlczXyFR3IeRoeFCc7RxHsYZA==}
+    engines: {node: '>=16'}
+    dependencies:
+      copy-anything: 3.0.5
     dev: false
 
   /superstruct@1.0.4:

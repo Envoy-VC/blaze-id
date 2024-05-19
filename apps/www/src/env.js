@@ -3,6 +3,8 @@ import { z } from 'zod';
 
 export const env = createEnv({
   server: {
+    KMS_SECRET_KEY: z.string().min(1),
+    POSTGRES_URL: z.string().min(1),
     NODE_ENV: z.enum(['development', 'test', 'production']),
   },
   client: {

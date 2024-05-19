@@ -3,70 +3,97 @@ import type {
   ICredentialPlugin,
   IDIDManager,
   IDataStore,
-  IDataStoreORM,
   IKeyManager,
   IResolver,
 } from '@veramo/core';
 import { createAgent } from '@veramo/core';
+import {
+  CredentialIssuerEIP712,
+  type ICredentialIssuerEIP712,
+} from '@veramo/credential-eip712';
 // W3C Verifiable Credential plugin
 import { CredentialPlugin } from '@veramo/credential-w3c';
+import {
+  DIDStore,
+  Entities,
+  type IDataStoreORM,
+  KeyStore,
+  PrivateKeyStore,
+  migrations,
+} from '@veramo/data-store';
 // Core identity manager plugin
 import { DIDManager } from '@veramo/did-manager';
 // Ethr did identity provider
 import { EthrDIDProvider } from '@veramo/did-provider-ethr';
+import { KeyDIDProvider } from '@veramo/did-provider-key';
+import { WebDIDProvider } from '@veramo/did-provider-web';
 // Custom resolvers
 import { DIDResolverPlugin } from '@veramo/did-resolver';
 // Core key manager plugin
 import { KeyManager } from '@veramo/key-manager';
 // Custom key management system for RN
-import { KeyManagementSystem } from '@veramo/kms-local';
+import { KeyManagementSystem, SecretBox } from '@veramo/kms-local';
 import { Resolver } from 'did-resolver';
 import { getResolver as ethrDidResolver } from 'ethr-did-resolver';
+import { getResolver as keyDidResolver } from 'key-did-resolver';
+import { DataSource } from 'typeorm';
 // TypeORM is installed with `@veramo/data-store`
 import { getResolver as webDidResolver } from 'web-did-resolver';
+import { env } from '~/env';
 
-import LitDIDStore from './LitDIDStore';
-import LitKeyStore from './LitKeyStore';
-import LitPrivateKeyStore from './LitPrivateKeyStore';
+export const runtime = 'node';
 
-const INFURA_PROJECT_ID = 'sample';
+const dbConnection = new DataSource({
+  type: 'postgres',
+  url: env.POSTGRES_URL,
+  migrations,
+  migrationsRun: true,
+  logging: ['error', 'info', 'warn'],
+  entities: Entities,
+}).initialize();
 
-export const agent = createAgent<
+const veramoAgent = createAgent<
   IDIDManager &
     IKeyManager &
     IDataStore &
     IDataStoreORM &
     IResolver &
-    ICredentialPlugin
+    ICredentialPlugin &
+    ICredentialIssuerEIP712
 >({
   plugins: [
     new KeyManager({
-      store: new LitKeyStore(),
+      // @ts-ignore
+      store: new KeyStore(dbConnection),
       kms: {
-        local: new KeyManagementSystem(new LitPrivateKeyStore()),
+        local: new KeyManagementSystem(
+          // @ts-ignore
+          new PrivateKeyStore(dbConnection, new SecretBox(env.KMS_SECRET_KEY))
+        ),
       },
     }),
     new DIDManager({
-      store: new LitDIDStore(),
-      defaultProvider: 'did:ethr:sepolia',
+      // @ts-ignore
+      store: new DIDStore(dbConnection),
+      defaultProvider: 'did:key',
       providers: {
-        'did:ethr:sepolia': new EthrDIDProvider({
+        'did:key': new KeyDIDProvider({
           defaultKms: 'local',
-          networks: [
-            {
-              chainId: 4,
-              rpcUrl: 'https://rinkeby.infura.io/v3/' + INFURA_PROJECT_ID,
-            },
-          ],
+        }),
+        'did:web': new WebDIDProvider({
+          defaultKms: 'local',
         }),
       },
     }),
     new DIDResolverPlugin({
       resolver: new Resolver({
-        ...ethrDidResolver({ infuraProjectId: INFURA_PROJECT_ID }),
         ...webDidResolver(),
+        ...keyDidResolver(),
       }),
     }),
     new CredentialPlugin(),
+    new CredentialIssuerEIP712(),
   ],
 });
+
+export default veramoAgent;

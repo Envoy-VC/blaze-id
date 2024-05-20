@@ -1,3 +1,4 @@
 import useLitAuth from './useLitAuth';
+import useVeramo from './useVeramo';
 
-export { useLitAuth };
+export { useLitAuth, useVeramo };

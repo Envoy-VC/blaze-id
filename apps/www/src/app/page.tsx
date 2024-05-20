@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { useLitAuth } from '~/lib/hooks';
+import { useLitAuth, useVeramo } from '~/lib/hooks';
 import { createPolygonIDDID } from '~/lib/polygon-id';
 import { createDID } from '~/lib/veramo';
 
@@ -14,15 +14,22 @@ import { Input } from '~/components/ui/input';
 
 const Home = () => {
   const { authWithPasskey } = useLitAuth();
+  const { agent } = useVeramo();
   const [did, setDID] = React.useState<string>('');
-
-  //const createDID = api.did.create.useMutation();
-  const deleteDID = api.did.delete.useMutation();
 
   return (
     <div>
       <Navbar />
       <div className='flex w-fit flex-col gap-2'>
+        start by mint pkp
+        <Button
+          onClick={async () => {
+            // const res = await mintPKP('Vedant');
+            // console.log(res);
+          }}
+        >
+          Mint PKP
+        </Button>
         <Button
           onClick={async () => {
             const res = await createDID();

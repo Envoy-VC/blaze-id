@@ -2,7 +2,8 @@
 
 import React from 'react';
 
-import { register } from '~/lib/webauthn';
+import { authenticatePKP, mintPKP } from '~/lib/lit/client';
+import { createPolygonIDDID } from '~/lib/polygon-id';
 
 import { Navbar } from '~/components';
 import { api } from '~/trpc/react';
@@ -24,7 +25,8 @@ const Home = () => {
       <div className='flex w-fit flex-col gap-2'>
         <Button
           onClick={async () => {
-            await createDID.mutateAsync();
+            const res = await createDID.mutateAsync();
+            console.log(res);
           }}
         >
           Generate DID
@@ -36,6 +38,22 @@ const Home = () => {
         >
           Delete DID
         </Button>
+        <Button
+          onClick={async () => {
+            const res = await mintPKP('Vedant');
+            console.log(res);
+          }}
+        >
+          Mint PKP
+        </Button>
+        <Button
+          onClick={async () => {
+            const res = await authenticatePKP();
+            console.log(res);
+          }}
+        >
+          Authenticate PKP
+        </Button>
         <Input
           placeholder='DID'
           value={did}
@@ -43,24 +61,11 @@ const Home = () => {
         />
         <Button
           onClick={async () => {
-            const { challenge } = await getChallenge.mutateAsync();
-            const res = await register({
-              username: 'Vedant',
-              challenge: challenge,
-            });
-
-            const data = await verifyAuth.mutateAsync({
-              registration: res,
-              expected: {
-                challenge,
-                origin: 'http://localhost:3000',
-              },
-            });
-
-            console.log(data);
+            const res = await createPolygonIDDID();
+            console.log(res);
           }}
         >
-          Register Authenticator
+          Create Polygon DID
         </Button>
       </div>
     </div>

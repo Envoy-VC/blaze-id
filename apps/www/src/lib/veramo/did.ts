@@ -1,7 +1,9 @@
 import agent from './agent';
 
 const createDID = async () => {
-  const identifier = await agent.didManagerCreate({ alias: 'default' });
+  const identifier = await agent.didManagerCreate({
+    provider: 'did:ethr:mainnet',
+  });
   return identifier;
 };
 

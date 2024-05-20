@@ -83,12 +83,26 @@ const veramoAgent = createAgent<
         'did:web': new WebDIDProvider({
           defaultKms: 'local',
         }),
+        'did:ethr:mainnet': new EthrDIDProvider({
+          defaultKms: 'local',
+          networks: [
+            {
+              name: 'mainnet',
+              rpcUrl: 'https://mainnet.infura.io/v3/',
+            },
+          ],
+        }),
       },
     }),
     new DIDResolverPlugin({
       resolver: new Resolver({
         ...webDidResolver(),
         ...keyDidResolver(),
+        ...ethrDidResolver({
+          networks: [
+            { name: 'mainnet', rpcUrl: 'https://mainnet.infura.io/v3/' },
+          ],
+        }),
       }),
     }),
     new CredentialPlugin(),

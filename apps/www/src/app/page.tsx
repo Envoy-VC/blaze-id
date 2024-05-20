@@ -4,6 +4,7 @@ import React from 'react';
 
 import { useLitAuth } from '~/lib/hooks';
 import { createPolygonIDDID } from '~/lib/polygon-id';
+import { createDID } from '~/lib/veramo';
 
 import { Navbar } from '~/components';
 import { api } from '~/trpc/react';
@@ -15,7 +16,7 @@ const Home = () => {
   const { authWithPasskey } = useLitAuth();
   const [did, setDID] = React.useState<string>('');
 
-  const createDID = api.did.create.useMutation();
+  //const createDID = api.did.create.useMutation();
   const deleteDID = api.did.delete.useMutation();
 
   return (
@@ -24,7 +25,7 @@ const Home = () => {
       <div className='flex w-fit flex-col gap-2'>
         <Button
           onClick={async () => {
-            const res = await createDID.mutateAsync();
+            const res = await createDID();
             console.log(res);
           }}
         >

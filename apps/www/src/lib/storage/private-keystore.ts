@@ -1,5 +1,6 @@
 import {
   AbstractPrivateKeyStore,
+  AbstractSecretBox,
   type ManagedPrivateKey,
 } from '@veramo/key-manager';
 import Dexie, { type Table } from 'dexie';
@@ -18,33 +19,45 @@ export class PrivateKeyDatabase extends Dexie {
 const db = new PrivateKeyDatabase();
 
 export default class LocalPrivateKeyStore extends AbstractPrivateKeyStore {
-  constructor() {
+  private secretBox: AbstractSecretBox;
+  constructor(secretBox: AbstractSecretBox) {
     super();
+    this.secretBox = secretBox;
   }
 
   async importKey(args: ManagedPrivateKey): Promise<ManagedPrivateKey> {
-    const res = await db.keys.add(args);
-    if (res === undefined) {
-      throw new Error('Key not imported');
+    const exists = await db.keys.get(args.alias);
+    if (exists) {
+      throw new Error('Key already exists with alias ' + args.alias);
     }
+    args.privateKeyHex = await this.secretBox.encrypt(args.privateKeyHex);
+    await db.keys.add(args, args.alias);
     return args;
   }
 
   async getKey(args: { alias: string }): Promise<ManagedPrivateKey> {
     const key = await db.keys.get(args.alias);
-    if (key === undefined) {
+    if (!key) {
       throw new Error('Key not found');
     }
+    key.privateKeyHex = await this.secretBox.decrypt(key.privateKeyHex);
     return key;
   }
 
   async deleteKey(args: { alias: string }): Promise<boolean> {
-    const res = await db.keys.delete(args.alias);
+    const key = await db.keys.get(args.alias);
+    if (!key) {
+      throw new Error('Key not found');
+    }
+    await db.keys.delete(key.alias);
     return true;
   }
 
   async listKeys(args: {}): Promise<ManagedPrivateKey[]> {
     const keys = await db.keys.toArray();
+    for (const key of keys) {
+      key.privateKeyHex = await this.secretBox.decrypt(key.privateKeyHex);
+    }
     return keys;
   }
 }

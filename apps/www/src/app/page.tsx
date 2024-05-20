@@ -16,8 +16,6 @@ const Home = () => {
 
   const createDID = api.did.create.useMutation();
   const deleteDID = api.did.delete.useMutation();
-  const getChallenge = api.webauthn.randomChallenge.useMutation();
-  const verifyAuth = api.webauthn.verify.useMutation();
 
   return (
     <div>

@@ -17,7 +17,6 @@ import {
   type Profile,
   RHSResolver,
   W3CCredential,
-  byteEncoder,
   core,
   defaultEthConnectionConfig,
 } from '@0xpolygonid/js-sdk';

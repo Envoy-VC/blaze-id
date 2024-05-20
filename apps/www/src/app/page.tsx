@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { authenticatePKP, mintPKP } from '~/lib/lit/client';
+import { useLitAuth } from '~/lib/hooks';
 import { createPolygonIDDID } from '~/lib/polygon-id';
 
 import { Navbar } from '~/components';
@@ -12,6 +12,7 @@ import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 
 const Home = () => {
+  const { authWithPasskey } = useLitAuth();
   const [did, setDID] = React.useState<string>('');
 
   const createDID = api.did.create.useMutation();
@@ -38,19 +39,11 @@ const Home = () => {
         </Button>
         <Button
           onClick={async () => {
-            const res = await mintPKP('Vedant');
-            console.log(res);
+            // const res = await mintPKP('Vedant');
+            // console.log(res);
           }}
         >
           Mint PKP
-        </Button>
-        <Button
-          onClick={async () => {
-            const res = await authenticatePKP();
-            console.log(res);
-          }}
-        >
-          Authenticate PKP
         </Button>
         <Input
           placeholder='DID'
@@ -64,6 +57,14 @@ const Home = () => {
           }}
         >
           Create Polygon DID
+        </Button>
+        <Button
+          onClick={async () => {
+            const res = await authWithPasskey();
+            console.log(res);
+          }}
+        >
+          Auth With Passkey
         </Button>
       </div>
     </div>

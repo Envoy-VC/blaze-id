@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@0xpolygonid/js-sdk": "^1.14.1",
+    "@lit-protocol/auth-helpers": "^5.1.0",
     "@lit-protocol/constants": "^5.1.0",
     "@lit-protocol/lit-auth-client": "^5.1.0",
     "@lit-protocol/lit-node-client": "^5.1.0",
@@ -26,7 +27,6 @@
     "@trpc/client": "next",
     "@trpc/react-query": "next",
     "@trpc/server": "next",
-    "@useorbis/db-sdk": "0.0.30-alpha",
     "@veramo/core": "^6.0.0",
     "@veramo/credential-eip712": "^6.0.0",
     "@veramo/credential-w3c": "^6.0.0",
@@ -59,10 +59,12 @@
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
     "typeorm": "^0.3.20",
+    "usehooks-ts": "^3.1.0",
     "viem": "^2.9.31",
     "wagmi": "^2.7.1",
     "web-did-resolver": "^2.0.27",
-    "zod": "^3.23.3"
+    "zod": "^3.23.3",
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",

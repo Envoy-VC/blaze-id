@@ -18,6 +18,7 @@ const metadata = {
   icons: ['https://avatars.githubusercontent.com/u/37784886'],
 };
 
+
 export const wagmiConfig: Config = createConfig({
   chains: [mainnet, sepolia, anvil],
   ssr: true,

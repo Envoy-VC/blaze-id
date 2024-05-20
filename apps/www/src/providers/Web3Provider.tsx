@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import type { PropsWithChildren } from 'react';
 
 import { projectId, wagmiConfig } from '~/lib/viem';

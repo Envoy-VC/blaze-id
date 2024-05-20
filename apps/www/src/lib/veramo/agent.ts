@@ -41,6 +41,8 @@ import { DataSource } from 'typeorm';
 import { getResolver as webDidResolver } from 'web-did-resolver';
 import { env } from '~/env';
 
+import { LocalDIDStore, LocalKeyStore, LocalPrivateKeyStore } from '../storage';
+
 export const runtime = 'node';
 
 const dbConnection = new DataSource({

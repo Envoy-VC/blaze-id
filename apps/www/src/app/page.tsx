@@ -2,20 +2,16 @@
 
 import React from 'react';
 
-import { useLitAuth, useVeramo } from '~/lib/hooks';
-import { createPolygonIDDID } from '~/lib/polygon-id';
-import { createDID } from '~/lib/veramo';
+import { useLitAuth, usePolygonID, useVeramo } from '~/lib/hooks';
 
 import { Navbar } from '~/components';
-import { api } from '~/trpc/react';
 
 import { Button } from '~/components/ui/button';
-import { Input } from '~/components/ui/input';
 
 const Home = () => {
   const { authWithPasskey } = useLitAuth();
-  const { agent } = useVeramo();
-  const [did, setDID] = React.useState<string>('');
+  const { createDID, createCredential } = useVeramo();
+  const { createDID: createPolygonIDDID } = usePolygonID();
 
   return (
     <div>
@@ -32,7 +28,9 @@ const Home = () => {
         </Button>
         <Button
           onClick={async () => {
-            const res = await createDID();
+            const res = await createDID({
+              provider: 'did:key',
+            });
             console.log(res);
           }}
         >
@@ -40,10 +38,22 @@ const Home = () => {
         </Button>
         <Button
           onClick={async () => {
-            await deleteDID.mutateAsync({ did });
+            const res = await createCredential({
+              credential: {
+                issuer: {
+                  id: 'did:key:z6Mkvi4DjUA2MTReKLYXMqaumUYVfXWuwbC8uXjNEZkhqh3H',
+                },
+                credentialSubject: {
+                  id: 'did:key:z6Mkvi4DjUA2MTReKLYXMqaumUYVfXWuwbC8uXjNEZkhqh3H',
+                  you: 'Rock',
+                },
+              },
+              proofFormat: 'jwt',
+            });
+            console.log(res);
           }}
         >
-          Delete DID
+          Create Credential
         </Button>
         <Button
           onClick={async () => {
@@ -53,11 +63,6 @@ const Home = () => {
         >
           Mint PKP
         </Button>
-        <Input
-          placeholder='DID'
-          value={did}
-          onChange={(e) => setDID(e.target.value)}
-        />
         <Button
           onClick={async () => {
             const res = await createPolygonIDDID();

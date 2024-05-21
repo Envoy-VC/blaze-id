@@ -13,7 +13,7 @@ export class DIDStoreDatabase extends Dexie {
   }
 }
 
-const db = new DIDStoreDatabase();
+export const db = new DIDStoreDatabase();
 
 export default class LocalDIDStore extends AbstractDIDStore {
   constructor() {

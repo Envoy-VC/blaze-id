@@ -23,11 +23,15 @@ import { getResolver as ethrDidResolver } from 'ethr-did-resolver';
 import { getResolver as keyDidResolver } from 'key-did-resolver';
 import { getResolver as webDidResolver } from 'web-did-resolver';
 
-import { LocalDIDStore, LocalKeyStore, LocalPrivateKeyStore } from '../storage';
-import LocalDataStore from '../storage/datastore';
+import {
+  IndexedDBDIDStore,
+  IndexedDBDataStore,
+  IndexedDBKeyStore,
+  IndexedDBPrivateKeyStore,
+} from '../storage';
 
 export const veramoDIDManagerOptions = {
-  store: new LocalDIDStore(),
+  store: new IndexedDBDIDStore(),
   defaultProvider: 'did:key',
   providers: {
     'did:key': new KeyDIDProvider({
@@ -67,11 +71,11 @@ export const agent = createAgent<
     ICredentialIssuerEIP712
 >({
   plugins: [
-    new LocalDataStore(),
+    new IndexedDBDataStore(),
     new KeyManager({
-      store: new LocalKeyStore(),
+      store: new IndexedDBKeyStore(),
       kms: {
-        local: new KeyManagementSystem(new LocalPrivateKeyStore()),
+        local: new KeyManagementSystem(new IndexedDBPrivateKeyStore()),
       },
     }),
     new DIDManager(veramoDIDManagerOptions),

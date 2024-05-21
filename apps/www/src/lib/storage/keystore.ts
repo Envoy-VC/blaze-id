@@ -15,19 +15,27 @@ export class KeyStoreDatabase extends Dexie {
 
 const db = new KeyStoreDatabase();
 
-export default class LocalKeyStore extends AbstractKeyStore {
+export default class IndexedDBKeyStore extends AbstractKeyStore {
   constructor() {
     super();
   }
 
   async importKey(args: Partial<IKey>): Promise<boolean> {
     const res = await db.keys.add(args);
-    return res !== undefined;
+    const key = await db.keys.get(args.kid);
+    if (!key) {
+      throw new Error('Key not imported');
+    }
+    return true;
   }
 
   async deleteKey(args: { kid: string }): Promise<boolean> {
     const res = await db.keys.delete(args.kid);
-    return res !== undefined;
+    const key = await db.keys.get(args.kid);
+    if (key) {
+      throw new Error('Key not deleted');
+    }
+    return true;
   }
 
   async getKey(args: { kid: string }): Promise<IKey> {

@@ -29,7 +29,7 @@ export class DataStoreDB extends Dexie {
 
 export const db = new DataStoreDB();
 
-export default class LocalDataStore implements Types.IAgentPlugin {
+export default class IndexedDBDataStore implements Types.IAgentPlugin {
   readonly methods: IDataStore;
   readonly schema = schema.IDataStore;
 

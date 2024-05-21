@@ -17,7 +17,7 @@ export class PrivateKeyDatabase extends Dexie {
 
 const db = new PrivateKeyDatabase();
 
-export default class LocalPrivateKeyStore extends AbstractPrivateKeyStore {
+export default class IndexedDBPrivateKeyStore extends AbstractPrivateKeyStore {
   constructor() {
     super();
   }

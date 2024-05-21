@@ -1,6 +1,11 @@
-import LocalDataStore from './datastore';
-import LocalDIDStore from './did';
-import LocalKeyStore from './keystore';
-import LocalPrivateKeyStore from './private-keystore';
+import IndexedDBDataStore from './datastore';
+import IndexedDBDIDStore from './did';
+import IndexedDBKeyStore from './keystore';
+import IndexedDBPrivateKeyStore from './private-keystore';
 
-export { LocalKeyStore, LocalPrivateKeyStore, LocalDIDStore };
+export {
+  IndexedDBDataStore,
+  IndexedDBDIDStore,
+  IndexedDBKeyStore,
+  IndexedDBPrivateKeyStore,
+};

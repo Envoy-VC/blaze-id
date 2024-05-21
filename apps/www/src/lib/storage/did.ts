@@ -15,7 +15,7 @@ export class DIDStoreDatabase extends Dexie {
 
 export const db = new DIDStoreDatabase();
 
-export default class LocalDIDStore extends AbstractDIDStore {
+export default class IndexedDBDIDStore extends AbstractDIDStore {
   constructor() {
     super();
   }

@@ -26,65 +26,56 @@ import { getResolver as webDidResolver } from 'web-did-resolver';
 
 import { LocalDIDStore, LocalKeyStore, LocalPrivateKeyStore } from '../storage';
 
-export const getAgent = (KMS_SECRET_KEY: string) => {
-  const veramoAgent = createAgent<
-    IDIDManager &
-      IKeyManager &
-      IDataStore &
-      IDataStoreORM &
-      IResolver &
-      ICredentialPlugin &
-      ICredentialIssuerEIP712
-  >({
-    plugins: [
-      new KeyManager({
-        store: new LocalKeyStore(),
-        kms: {
-          local: new KeyManagementSystem(
-            new LocalPrivateKeyStore(new SecretBox(KMS_SECRET_KEY))
-          ),
-        },
-      }),
-      new DIDManager({
-        // @ts-ignore
-        store: new LocalDIDStore(),
-        defaultProvider: 'did:key',
-        providers: {
-          'did:key': new KeyDIDProvider({
-            defaultKms: 'local',
-          }),
-          'did:web': new WebDIDProvider({
-            defaultKms: 'local',
-          }),
-          'did:ethr:mainnet': new EthrDIDProvider({
-            defaultKms: 'local',
-            networks: [
-              {
-                name: 'mainnet',
-                rpcUrl: 'https://mainnet.infura.io/v3/',
-              },
-            ],
-          }),
-        },
-      }),
-      new DIDResolverPlugin({
-        resolver: new Resolver({
-          ...webDidResolver(),
-          ...keyDidResolver(),
-          ...ethrDidResolver({
-            networks: [
-              { name: 'mainnet', rpcUrl: 'https://mainnet.infura.io/v3/' },
-            ],
-          }),
+export const agent = createAgent<
+  IDIDManager &
+    IKeyManager &
+    IDataStore &
+    IDataStoreORM &
+    IResolver &
+    ICredentialPlugin &
+    ICredentialIssuerEIP712
+>({
+  plugins: [
+    new KeyManager({
+      store: new LocalKeyStore(),
+      kms: {
+        local: new KeyManagementSystem(new LocalPrivateKeyStore()),
+      },
+    }),
+    new DIDManager({
+      // @ts-ignore
+      store: new LocalDIDStore(),
+      defaultProvider: 'did:key',
+      providers: {
+        'did:key': new KeyDIDProvider({
+          defaultKms: 'local',
+        }),
+        'did:web': new WebDIDProvider({
+          defaultKms: 'local',
+        }),
+        'did:ethr:mainnet': new EthrDIDProvider({
+          defaultKms: 'local',
+          networks: [
+            {
+              name: 'mainnet',
+              rpcUrl: 'https://mainnet.infura.io/v3/',
+            },
+          ],
+        }),
+      },
+    }),
+    new DIDResolverPlugin({
+      resolver: new Resolver({
+        ...webDidResolver(),
+        ...keyDidResolver(),
+        ...ethrDidResolver({
+          networks: [
+            { name: 'mainnet', rpcUrl: 'https://mainnet.infura.io/v3/' },
+          ],
         }),
       }),
-      new CredentialPlugin(),
-      new CredentialIssuerEIP712(),
-    ],
-  });
-
-  return veramoAgent;
-};
-
-const agent = getAgent('test');
-export type VeramoAgent = typeof agent;
+    }),
+    new CredentialPlugin(),
+    new CredentialIssuerEIP712(),
+  ],
+});

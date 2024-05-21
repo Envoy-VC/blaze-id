@@ -4,11 +4,11 @@ import type { IDataStore } from '@veramo/data-store';
 import Dexie, { type Table } from 'dexie';
 import { sha256 } from 'sha.js';
 
-interface Credential extends Types.VerifiableCredential {
+export interface Credential extends Types.VerifiableCredential {
   hash: string;
 }
 
-interface Presentation extends Types.VerifiablePresentation {
+export interface Presentation extends Types.VerifiablePresentation {
   hash: string;
 }
 

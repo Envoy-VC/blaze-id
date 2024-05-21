@@ -4,6 +4,7 @@ import type {
 } from '@veramo/core';
 import { v4 as uuid } from 'uuid';
 
+import { db as dataStoreDB } from '../storage/datastore';
 import { db as didDB } from '../storage/did';
 import { agent, veramoDIDManagerOptions } from '../veramo';
 
@@ -77,18 +78,23 @@ const useVeramo = () => {
     const res = await agent.dataStoreGetVerifiableCredential({
       hash,
     });
+    return res;
+  };
 
+  const getAllCredentials = async () => {
+    const res = await dataStoreDB.credentials.toArray();
     return res;
   };
 
   return {
     agent,
     createDID,
-    createCredential,
-    verifyCredential,
     getDIDByAlias,
     getAllDIDs,
+    createCredential,
+    verifyCredential,
     getCredentialByHash,
+    getAllCredentials,
   };
 };
 

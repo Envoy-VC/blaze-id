@@ -12,7 +12,7 @@ import { type State, WagmiProvider } from 'wagmi';
 createWeb3Modal({
   wagmiConfig: wagmiConfig,
   projectId,
-  enableAnalytics: true,
+  enableAnalytics: false,
   enableOnramp: true,
   themeMode: 'light',
 });

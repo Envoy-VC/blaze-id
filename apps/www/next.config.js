@@ -12,4 +12,5 @@ const config = {
 };
 export default MillionLint.next({
   rsc: true,
+  dev: false,
 })(config);

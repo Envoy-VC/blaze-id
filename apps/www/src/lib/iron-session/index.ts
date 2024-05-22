@@ -2,6 +2,7 @@
 
 import { cookies } from 'next/headers';
 
+import type { SessionSigs } from '@lit-protocol/types';
 import { type SessionOptions } from 'iron-session';
 import { getIronSession } from 'iron-session';
 import { env } from '~/env';
@@ -10,6 +11,7 @@ export interface SessionData {
   username: string;
   isLoggedIn: boolean;
   expires: string;
+  sessionSigs: SessionSigs;
 }
 
 const sessionOptions: SessionOptions = {

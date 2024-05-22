@@ -3,19 +3,14 @@ import { useCallback, useEffect } from 'react';
 import { useLitStore } from '~/lib/stores';
 
 import { LitAbility, LitActionResource } from '@lit-protocol/auth-helpers';
-import type { AuthMethod, IRelayPKP, SessionSigs } from '@lit-protocol/types';
+import type { AuthMethod, IRelayPKP } from '@lit-protocol/types';
+import { compareAsc } from 'date-fns';
 import { toast } from 'sonner';
-import { useLocalStorage } from 'usehooks-ts';
 
-import { login } from '../iron-session';
+import { getSession, login } from '../iron-session';
 
 export default function useLitAuth() {
   const { client, authClient, authProvider } = useLitStore();
-
-  const [sessionDetails, setSessionDetails] = useLocalStorage<{
-    sessionSigs: SessionSigs;
-    expiry: string;
-  } | null>('sessionDetails', null);
 
   const fetchMyPKPs = useCallback(
     async (authMethod: AuthMethod): Promise<IRelayPKP[]> => {
@@ -27,13 +22,14 @@ export default function useLitAuth() {
 
   const createSession = useCallback(
     async (pkpPublicKey: string, authMethod: AuthMethod) => {
-      const currentExpiry = sessionDetails?.expiry ?? '';
-      if (
-        sessionDetails &&
-        currentExpiry &&
-        new Date(currentExpiry) > new Date()
-      ) {
-        return sessionDetails;
+      const session = await getSession();
+      const isNotExpired =
+        compareAsc(new Date(session.expires ?? 1), Date.now()) == 1;
+      if (isNotExpired) {
+        return {
+          sessionSigs: session.sessionSigs,
+          expiry: session.expires,
+        };
       }
       const expiry = authClient!.litNodeClient.getExpiration();
       const sessionSigs = await authProvider.getSessionSigs({
@@ -49,7 +45,6 @@ export default function useLitAuth() {
           ],
         },
       });
-      setSessionDetails({ sessionSigs, expiry });
       return { sessionSigs, expiry };
     },
     [authClient]
@@ -61,10 +56,14 @@ export default function useLitAuth() {
         const pkps = await fetchMyPKPs(authMethod);
         const account = 0;
         const pub_key = pkps[account]!.publicKey;
-        const sigs = await createSession(pub_key, authMethod);
+        const { sessionSigs, expiry } = await createSession(
+          pub_key,
+          authMethod
+        );
         return {
           username: pkps[account]?.ethAddress!,
-          sigs,
+          sessionSigs,
+          expiry,
         };
       } catch (err) {
         console.error(err);
@@ -85,7 +84,8 @@ export default function useLitAuth() {
       const { success } = await login({
         username: data.username,
         isLoggedIn: true,
-        expires: data.sigs.expiry,
+        expires: data.expiry,
+        sessionSigs: data.sessionSigs,
       });
       if (!success) {
         throw new Error('Failed to login');
@@ -153,7 +153,6 @@ export default function useLitAuth() {
 
   return {
     authWithPasskey,
-    sessionDetails,
     mintPKP,
   };
 }

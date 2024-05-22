@@ -1,17 +1,7 @@
-'use client';
-
-import dynamic from 'next/dynamic';
-
-const DynamicHome = dynamic(() => import('../components/Home'), {
-  ssr: false,
-});
+import { Hero } from '~/components';
 
 const Home = () => {
-  return (
-    <div>
-      <DynamicHome />
-    </div>
-  );
+  return <Hero />;
 };
 
 export default Home;

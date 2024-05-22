@@ -74,3 +74,20 @@
     @apply bg-background text-foreground;
   }
 }
+
+.rainbow-gradient {
+  background: linear-gradient(
+    to right,
+    #0099a2,
+    #dcb029 20.83%,
+    #db5286 50%,
+    #0083bd 80.21%,
+    #00bd77
+  );
+}
+
+.text-glow {
+  text-shadow:
+    0 0 40px rgb(192 219 255 / 50%),
+    0 0 16px rgb(65 120 255 / 12%);
+}

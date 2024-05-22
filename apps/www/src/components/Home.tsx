@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useLitAuth, usePolygonID, useVeramo } from '~/lib/hooks';
 
-import Navbar from './navbar';
+import Navbar from './Navbar';
 import { Button } from './ui/button';
 
 const HomeComponent = () => {

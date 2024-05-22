@@ -14,6 +14,7 @@ const Create = () => {
   const router = useRouter();
   const { authWithPasskey, mintPKP } = useLitAuth();
   const [username, setUsername] = React.useState<string>('');
+
   return (
     <div className='flex w-full flex-col items-center justify-center gap-8 py-6'>
       <div className='flex flex-col items-center justify-center gap-2 sm:flex-row'>
@@ -41,8 +42,15 @@ const Create = () => {
       <button
         className='flex w-fit flex-row items-center gap-2 rounded-full border border-neutral-300 px-4 py-2 font-medium text-neutral-200'
         onClick={async () => {
-          await authWithPasskey();
-          router.push('/dashboard');
+          try {
+            const data = await authWithPasskey();
+            if (!data) {
+              return;
+            }
+            router.push('/dashboard');
+          } catch (error) {
+            console.error(error);
+          }
         }}
       >
         <Fingerprint size={20} /> Authenticate

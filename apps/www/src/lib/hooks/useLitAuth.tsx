@@ -7,6 +7,8 @@ import type { AuthMethod, IRelayPKP, SessionSigs } from '@lit-protocol/types';
 import { toast } from 'sonner';
 import { useLocalStorage } from 'usehooks-ts';
 
+import { login } from '../iron-session';
+
 export default function useLitAuth() {
   const { client, authClient, authProvider } = useLitStore();
 
@@ -60,7 +62,10 @@ export default function useLitAuth() {
         const account = 0;
         const pub_key = pkps[account]!.publicKey;
         const sigs = await createSession(pub_key, authMethod);
-        return sigs;
+        return {
+          username: pkps[account]?.ethAddress!,
+          sigs,
+        };
       } catch (err) {
         console.error(err);
       }
@@ -72,10 +77,23 @@ export default function useLitAuth() {
     const t = toast.loading('Authenticating...');
     try {
       const authMethod = await authProvider.authenticate();
-      await handleAuth(authMethod);
+      const data = await handleAuth(authMethod);
+
+      if (!data) {
+        throw new Error('Authentication failed');
+      }
+      const { success } = await login({
+        username: data.username,
+        isLoggedIn: true,
+        expires: data.sigs.expiry,
+      });
+      if (!success) {
+        throw new Error('Failed to login');
+      }
       toast.success('Authenticated successfully', {
         id: t,
       });
+      return data;
     } catch (error) {
       console.error(error);
       if (typeof error === 'object' && !!error && 'message' in error) {

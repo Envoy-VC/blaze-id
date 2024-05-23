@@ -60,7 +60,7 @@ const CreateForm = () => {
         };
         const provider =
           `did:${values.type}` + (values.type === 'ethr' ? ':mainnet' : '');
-        
+
         const res = await createDID({
           alias,
           provider: provider as CreateKeyOptions['provider'],

@@ -1,4 +1,5 @@
 import {
+  AgentResolver,
   BjjProvider,
   CredentialStatusResolverRegistry,
   CredentialStatusType,
@@ -46,6 +47,12 @@ statusRegistry.register(
   CredentialStatusType.Iden3ReverseSparseMerkleTreeProof,
   new RHSResolver(dataStorage.states)
 );
+
+statusRegistry.register(
+  CredentialStatusType.Iden3commRevocationStatusV1,
+  new AgentResolver()
+);
+
 export const credentialWallet = new CredentialWallet(
   dataStorage,
   statusRegistry

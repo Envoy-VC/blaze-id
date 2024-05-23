@@ -14,29 +14,29 @@ import {
 } from '~/components/ui/select';
 
 const SelectDID = () => {
-  const { activeDID, setActiveDID } = useBlazeStore();
+  const { setActiveDID } = useBlazeStore();
   const { getAllDIDs } = useVeramo();
-  const {} = usePolygonID();
+  const { getAllDIDs: getAllPolygonIDs } = usePolygonID();
 
   const dids = useLiveQuery(async () => {
     const dids = await getAllDIDs();
-    return dids;
+    const polygonDIDS = await getAllPolygonIDs();
+    return [...dids, ...polygonDIDS];
   });
   if (dids)
     return (
-      <Select>
+      <Select
+        onValueChange={(val) => {
+          const did = dids?.find((d) => d.did === val);
+          setActiveDID(did!);
+        }}
+      >
         <SelectTrigger className='mx-0 w-fit px-2'>
           <SelectValue placeholder='Active DID' />
         </SelectTrigger>
         <SelectContent>
           {dids?.map((did) => (
-            <SelectItem
-              key={did.did}
-              value={did.did}
-              onClick={() => {
-                setActiveDID(did);
-              }}
-            >
+            <SelectItem key={did.did} value={did.did}>
               {did.did}
             </SelectItem>
           ))}

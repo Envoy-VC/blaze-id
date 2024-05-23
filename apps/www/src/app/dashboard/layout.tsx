@@ -7,7 +7,7 @@ const Layout = ({ children }: PropsWithChildren) => {
     <SessionWrapper>
       <div className='flex flex-row'>
         <Sidebar />
-        <div className='flex w-full flex-col'>
+        <div className='flex w-full flex-col bg-[#F9FAFB]'>
           <Navbar />
           {children}
         </div>

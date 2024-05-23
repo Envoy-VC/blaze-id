@@ -17,6 +17,7 @@ import { Button } from '~/components/ui/button';
 
 import { CircleCheck, TriangleAlert } from 'lucide-react';
 import {
+  BookOpenCheck,
   CreditCard,
   Presentation,
   Settings,
@@ -44,6 +45,11 @@ const sidebarLinks = [
     name: 'Proofs',
     Icon: ShieldCheck,
     href: '/dashboard/proofs',
+  },
+  {
+    name: 'Examples',
+    Icon: BookOpenCheck,
+    href: '/dashboard/examples',
   },
 ];
 

@@ -110,8 +110,17 @@ export const columns: ColumnDef<Data>[] = [
     id: 'actions',
     cell: ({ row }) => {
       const credential = row.original;
+      const { deleteCredential } = useVeramo();
+      const { deleteCredential: deletePolygonIDCredential } = usePolygonID();
       const { setOpen, setIsShareOpen } = useCredentialsStore();
 
+      const onDelete = async () => {
+        if (credential.data instanceof W3CCredential) {
+          await deletePolygonIDCredential(credential.data.id);
+        } else {
+          await deleteCredential(credential.data.hash);
+        }
+      };
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -149,6 +158,9 @@ export const columns: ColumnDef<Data>[] = [
               }}
             >
               Share Credential
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={onDelete}>
+              Delete Credential
             </DropdownMenuItem>
             <DropdownMenuSeparator />
           </DropdownMenuContent>
@@ -194,6 +206,10 @@ export default function CredentialsTable() {
     }
     return res;
   });
+
+
+
+  
   const table = useReactTable({
     data: data ?? [],
     columns,

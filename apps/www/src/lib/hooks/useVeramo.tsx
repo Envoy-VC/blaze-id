@@ -55,6 +55,9 @@ const useVeramo = () => {
       console.log(error);
     }
   };
+  const deleteCredential = async (hash: string) => {
+    const success = await agent.dataStoreDeleteVerifiableCredential({ hash });
+  };
 
   const verifyCredential = async (credential: VerifiableCredential) => {
     const result = await agent.verifyCredential({
@@ -102,6 +105,7 @@ const useVeramo = () => {
     verifyCredential,
     getCredentialByHash,
     getAllCredentials,
+    deleteCredential,
   };
 };
 

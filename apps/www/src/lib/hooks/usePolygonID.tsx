@@ -25,6 +25,10 @@ const usePolygonID = () => {
     return { did, credential };
   };
 
+  const deleteCredential = async (id: string) => {
+    await credentialWallet.remove(id);
+  };
+
   const issueCredential = async (
     issuer: string,
     request: CredentialRequest
@@ -63,6 +67,7 @@ const usePolygonID = () => {
     getDID,
     getAllCredentials,
     issueCredential,
+    deleteCredential,
   };
 };
 

@@ -1,13 +1,15 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import QRCode from 'react-qr-code';
 
 import { getKYCAgeCredential } from '~/lib/credentials';
 import { usePolygonID } from '~/lib/hooks';
 import { useBlazeStore } from '~/lib/stores';
 import { cn } from '~/lib/utils';
 
+import type { W3CCredential } from '@0xpolygonid/js-sdk';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
@@ -15,6 +17,12 @@ import { z } from 'zod';
 
 import { Button } from '~/components/ui/button';
 import { Calendar } from '~/components/ui/calendar';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '~/components/ui/dialog';
 import {
   Form,
   FormControl,
@@ -36,6 +44,8 @@ import { CalendarIcon } from 'lucide-react';
 const KYCForm = () => {
   const { issueCredential, getDID } = usePolygonID();
   const { activeDID } = useBlazeStore();
+  const [open, setOpen] = useState<boolean>(false);
+  const [credential, setCredential] = useState<W3CCredential>();
 
   const form = useForm<FormType>({
     resolver: zodResolver(formSchema),
@@ -56,6 +66,8 @@ const KYCForm = () => {
         throw new Error('Active DID should be a Polygon ID');
       }
       const credential = await issueCredential(did.did, req);
+      setCredential(credential);
+      setOpen(true);
     } catch (error) {
       console.log(error);
       toast.error((error as Error).message);
@@ -109,6 +121,7 @@ const KYCForm = () => {
                   </PopoverTrigger>
                   <PopoverContent className='w-auto p-0' align='start'>
                     <Calendar
+                      mode='single'
                       toDate={new Date(Date.now())}
                       toMonth={new Date(Date.now())}
                       toYear={2023}
@@ -118,7 +131,6 @@ const KYCForm = () => {
                       captionLayout='dropdown'
                       selected={field.value}
                       onSelect={field.onChange}
-                      disabled={(date) => date > new Date()}
                       initialFocus
                     />
                   </PopoverContent>
@@ -180,6 +192,27 @@ const KYCForm = () => {
           <Button type='submit'>Issue Credential</Button>
         </form>
       </Form>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className='m-0 w-full max-w-xl px-4'>
+          <DialogHeader>
+            <DialogTitle className='mb-4 text-center'>
+              Share Credential
+            </DialogTitle>
+            <div className='flex flex-col items-center justify-center gap-4'>
+              <QRCode value={JSON.stringify(credential)} size={256 * 2} />
+              <Button
+                type='button'
+                onClick={() => {
+                  navigator.clipboard.writeText(JSON.stringify(credential));
+                  toast.success('Credential Copied to Clipboard');
+                }}
+              >
+                Copy Credential
+              </Button>
+            </div>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

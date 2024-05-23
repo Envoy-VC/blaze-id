@@ -30,8 +30,14 @@ const usePolygonID = () => {
     request: CredentialRequest
   ) => {
     const did = new core.DID({ id: issuer.slice(14), method: 'polygonid' });
-    const cred = await identityWallet.issueCredential(did, request);
-    return cred;
+    const credential = await identityWallet.issueCredential(did, request);
+    await dataStorage.credential.saveCredential(credential);
+    await identityWallet.addCredentialsToMerkleTree([credential], did);
+    await identityWallet.publishStateToRHS(
+      did,
+      'https://rhs-staging.polygonid.me'
+    );
+    return credential;
   };
 
   const getAllDIDs = async () => {

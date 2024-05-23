@@ -1,13 +1,16 @@
 import React, { type PropsWithChildren } from 'react';
 
-import { SessionWrapper, Sidebar } from './components';
+import { Navbar, SessionWrapper, Sidebar } from './components';
 
 const Layout = ({ children }: PropsWithChildren) => {
   return (
     <SessionWrapper>
       <div className='flex flex-row'>
         <Sidebar />
-        {children}
+        <div className='flex w-full flex-col'>
+          <Navbar />
+          {children}
+        </div>
       </div>
     </SessionWrapper>
   );

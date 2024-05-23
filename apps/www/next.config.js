@@ -1,5 +1,3 @@
-import MillionLint from '@million/lint';
-
 await import('./src/env.js');
 
 /** @type {import("next").NextConfig} */
@@ -10,7 +8,4 @@ const config = {
     return config;
   },
 };
-export default MillionLint.next({
-  rsc: true,
-  dev: false,
-})(config);
+export default config;

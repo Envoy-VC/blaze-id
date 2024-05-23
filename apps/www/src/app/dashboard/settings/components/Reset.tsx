@@ -1,7 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-
 import React from 'react';
 
 import {
@@ -18,7 +16,6 @@ import {
 import { Button } from '~/components/ui/button';
 
 const Reset = () => {
-  const router = useRouter();
   return (
     <div className='flex w-full flex-row items-center justify-between gap-3'>
       <div>
@@ -48,11 +45,14 @@ const Reset = () => {
                     .databases()
                     .then((dbs) => {
                       dbs.forEach((db) => {
-                        indexedDB.deleteDatabase(db.name ?? '');
+                        // Don't delete the circuit storage database
+                        if (db.name !== 'polygon-id-circuit-storage-db') {
+                          indexedDB.deleteDatabase(db.name ?? '');
+                        }
                       });
                     })
                     .then(() => {
-                      router.refresh();
+                      window.location.reload();
                     });
                 }}
               >

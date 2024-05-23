@@ -1,34 +1,17 @@
-'use client';
-
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 
 import React from 'react';
 
-import { useVeramo } from '~/lib/hooks';
-
-import { useLiveQuery } from 'dexie-react-hooks';
-
 import { Button } from '~/components/ui/button';
 
 import { Header } from './components';
-import { type DID, DIDTable, columns } from './components/DIDTable';
+
+const DIDTable = dynamic(() => import('./components/DIDTable'), {
+  ssr: false,
+});
 
 const Dashboard = () => {
-  const { getAllDIDs } = useVeramo();
-
-  const data = useLiveQuery(async () => {
-    const dids = await getAllDIDs();
-    const res: DID[] = [];
-    for (const did of dids) {
-      res.push({
-        id: did.did,
-        alias: did.alias,
-        provider: did.provider,
-      });
-    }
-    return res;
-  });
-
   return (
     <div className='p-3'>
       <div className='flex flex-col justify-between md:flex-row'>
@@ -50,7 +33,7 @@ const Dashboard = () => {
         </Button>
       </div>
       <div className='py-8'>
-        <DIDTable columns={columns} data={data ?? []} />
+        <DIDTable />
       </div>
     </div>
   );

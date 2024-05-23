@@ -8,6 +8,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import { useLiveQuery } from 'dexie-react-hooks';
 
 import { Button } from '~/components/ui/button';
 import {
@@ -88,17 +89,23 @@ export const columns: ColumnDef<DID>[] = [
   },
 ];
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-}
+export default function DIDTable() {
+  const { getAllDIDs } = useVeramo();
 
-export function DIDTable<TData, TValue>({
-  columns,
-  data,
-}: DataTableProps<TData, TValue>) {
+  const data = useLiveQuery(async () => {
+    const dids = await getAllDIDs();
+    const res: DID[] = [];
+    for (const did of dids) {
+      res.push({
+        id: did.did,
+        alias: did.alias,
+        provider: did.provider,
+      });
+    }
+    return res;
+  });
   const table = useReactTable({
-    data,
+    data: data ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
   });

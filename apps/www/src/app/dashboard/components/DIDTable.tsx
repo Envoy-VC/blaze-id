@@ -1,6 +1,6 @@
 'use client';
 
-import { useVeramo } from '~/lib/hooks';
+import { usePolygonID, useVeramo } from '~/lib/hooks';
 
 import type { ColumnDef } from '@tanstack/react-table';
 import {
@@ -91,15 +91,24 @@ export const columns: ColumnDef<DID>[] = [
 
 export default function DIDTable() {
   const { getAllDIDs } = useVeramo();
+  const { getAllDIDs: getAllPolygonDIDs } = usePolygonID();
 
   const data = useLiveQuery(async () => {
     const dids = await getAllDIDs();
+    const polygonDIDs = await getAllPolygonDIDs();
     const res: DID[] = [];
     for (const did of dids) {
       res.push({
         id: did.did,
         alias: did.alias,
         provider: did.provider,
+      });
+    }
+
+    for (const did of polygonDIDs) {
+      res.push({
+        id: did.did,
+        provider: 'did:polygonid',
       });
     }
     return res;

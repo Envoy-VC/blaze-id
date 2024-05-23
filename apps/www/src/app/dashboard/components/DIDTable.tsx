@@ -9,6 +9,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { useLiveQuery } from 'dexie-react-hooks';
+import { toast } from 'sonner';
 
 import { Button } from '~/components/ui/button';
 import {
@@ -62,6 +63,8 @@ export const columns: ColumnDef<DID>[] = [
           did.provider === 'did:ethr:mainnet'
         ) {
           await deleteDID(did.id);
+        } else {
+          toast.error('Cannot delete PolygonID DIDs');
         }
       };
 

@@ -8,7 +8,7 @@ import { db as dataStoreDB } from '../storage/datastore';
 import { db as didDB } from '../storage/did';
 import { agent, veramoDIDManagerOptions } from '../veramo';
 
-interface CreateKeyDIDOptions {
+export interface CreateKeyDIDOptions {
   keyType?: 'Ed25519' | 'X25519' | 'Secp256k1' | undefined;
 }
 
@@ -16,7 +16,7 @@ interface CreateWebDIDOptions {}
 
 interface CreateEthrDIDOptions {}
 
-interface CreateKeyOptions {
+export interface CreateKeyOptions {
   alias?: string;
   kms?: string;
   provider: keyof (typeof veramoDIDManagerOptions)['providers'];

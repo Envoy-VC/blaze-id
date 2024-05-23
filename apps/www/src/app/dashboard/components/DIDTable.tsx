@@ -1,5 +1,7 @@
 'use client';
 
+import { useVeramo } from '~/lib/hooks';
+
 import type { ColumnDef } from '@tanstack/react-table';
 import {
   flexRender,
@@ -50,6 +52,17 @@ export const columns: ColumnDef<DID>[] = [
     id: 'actions',
     cell: ({ row }) => {
       const did = row.original;
+      const { deleteDID } = useVeramo();
+
+      const onDelete = async () => {
+        if (
+          did.provider === 'did:key' ||
+          did.provider === 'did:web' ||
+          did.provider === 'did:ethr:mainnet'
+        ) {
+          await deleteDID(did.id);
+        }
+      };
 
       return (
         <DropdownMenu>
@@ -67,7 +80,7 @@ export const columns: ColumnDef<DID>[] = [
               Copy ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Delete DID</DropdownMenuItem>
+            <DropdownMenuItem onClick={onDelete}>Delete DID</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

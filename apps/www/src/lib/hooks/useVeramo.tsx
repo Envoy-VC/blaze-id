@@ -35,6 +35,12 @@ const useVeramo = () => {
     });
     return identifier;
   };
+  const deleteDID = async (did: string) => {
+    const success = await agent.didManagerDelete({
+      did,
+    });
+    return success;
+  };
 
   const createCredential = async (options: ICreateVerifiableCredentialArgs) => {
     try {
@@ -89,6 +95,7 @@ const useVeramo = () => {
   return {
     agent,
     createDID,
+    deleteDID,
     getDIDByAlias,
     getAllDIDs,
     createCredential,

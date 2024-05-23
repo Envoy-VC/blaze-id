@@ -12,7 +12,6 @@ import {
   ProofService,
   core,
 } from '@0xpolygonid/js-sdk';
-import circuit from '~/circuits/stateTransition/verification_key.json';
 
 import { dataStorage } from '../polygon-id';
 import { credentialWallet, identityWallet } from '../polygon-id';

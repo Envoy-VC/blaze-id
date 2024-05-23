@@ -1,5 +1,7 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
 import QRCode from 'react-qr-code';
 
 import { usePolygonID, useVeramo } from '~/lib/hooks';
@@ -110,9 +112,10 @@ export const columns: ColumnDef<Data>[] = [
     id: 'actions',
     cell: ({ row }) => {
       const credential = row.original;
+      const router = useRouter();
       const { deleteCredential } = useVeramo();
       const { deleteCredential: deletePolygonIDCredential } = usePolygonID();
-      const { setOpen, setIsShareOpen } = useCredentialsStore();
+      const { setIsShareOpen } = useCredentialsStore();
 
       const onDelete = async () => {
         if (credential.data instanceof W3CCredential) {
@@ -147,7 +150,15 @@ export const columns: ColumnDef<Data>[] = [
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
-                setOpen(true, credential.data);
+                if (credential.data instanceof W3CCredential) {
+                  router.push(
+                    `/dashboard/credentials/${credential.data.id}?type=polygonid`
+                  );
+                } else {
+                  router.push(
+                    `/dashboard/credentials/${credential.data.hash}?type=veramo`
+                  );
+                }
               }}
             >
               Show Credential
@@ -207,9 +218,6 @@ export default function CredentialsTable() {
     return res;
   });
 
-
-
-  
   const table = useReactTable({
     data: data ?? [],
     columns,

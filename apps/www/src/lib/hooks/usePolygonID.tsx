@@ -59,6 +59,11 @@ const usePolygonID = () => {
     return credentials;
   };
 
+  const getCredential = async (id: string) => {
+    const credential = await dataStorage.credential.findCredentialById(id);
+    return credential;
+  };
+
   return {
     identityWallet,
     credentialWallet,
@@ -68,6 +73,7 @@ const usePolygonID = () => {
     getAllCredentials,
     issueCredential,
     deleteCredential,
+    getCredential,
   };
 };
 

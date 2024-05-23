@@ -12,6 +12,7 @@ import {
   ProofService,
   core,
 } from '@0xpolygonid/js-sdk';
+import { toast } from 'sonner';
 
 import { dataStorage } from '../polygon-id';
 import { credentialWallet, identityWallet } from '../polygon-id';
@@ -23,11 +24,16 @@ const load = async (path: string): Promise<Uint8Array> => {
 };
 
 const usePolygonID = () => {
+  const [proofService, setProofService] = React.useState<ProofService | null>(
+    null
+  );
+
   const initProofService = async (
     identityWallet: IIdentityWallet,
     credentialWallet: ICredentialWallet,
     stateStorage: IStateStorage
   ): Promise<ProofService> => {
+    const id = toast.loading('Initializing Proof Service');
     const circuitStorage = new CircuitStorage(
       new IndexedDBDataSource<CircuitData>('polygon-id-circuit-storage')
     );
@@ -60,7 +66,8 @@ const usePolygonID = () => {
       circuitStorage,
       stateStorage
     );
-    console.log(proofService);
+    setProofService(proofService);
+    toast.success('Proof Service Initialized', { id });
     return proofService;
   };
   const createDID = async () => {
@@ -99,6 +106,7 @@ const usePolygonID = () => {
   return {
     identityWallet,
     credentialWallet,
+    proofService,
     createDID,
     getAllDIDs,
     getAllCredentials,

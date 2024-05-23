@@ -78,7 +78,14 @@ export const circuitStorage = new CircuitStorage(
   new IndexedDBDataSource<CircuitData>('polygon-id-circuit-storage')
 );
 
-export const initProofService = async (): Promise<ProofService> => {
+export const proofService = new ProofService(
+  identityWallet,
+  credentialWallet,
+  circuitStorage,
+  dataStorage.states
+);
+
+export const initProofService = async () => {
   await circuitStorage.saveCircuitData(CircuitId.AtomicQuerySigV2, {
     circuitId: CircuitId.AtomicQuerySigV2,
     wasm: await load(`${CircuitId.AtomicQuerySigV2.toString()}/circuit.wasm`),
@@ -100,12 +107,4 @@ export const initProofService = async (): Promise<ProofService> => {
       `${CircuitId.StateTransition.toString()}/verification_key.json`
     ),
   });
-
-  const proofService = new ProofService(
-    identityWallet,
-    credentialWallet,
-    circuitStorage,
-    dataStorage.states
-  );
-  return proofService;
 };

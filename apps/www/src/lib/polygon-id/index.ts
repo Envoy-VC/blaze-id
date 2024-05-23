@@ -1,6 +1,9 @@
 import {
   AgentResolver,
   BjjProvider,
+  type CircuitData,
+  CircuitId,
+  CircuitStorage,
   CredentialStatusResolverRegistry,
   CredentialStatusType,
   CredentialStorage,
@@ -16,8 +19,10 @@ import {
   KmsKeyType,
   MerkleTreeIndexedDBStorage,
   type Profile,
+  ProofService,
   RHSResolver,
   W3CCredential,
+  core,
   defaultEthConnectionConfig,
 } from '@0xpolygonid/js-sdk';
 
@@ -62,3 +67,45 @@ export const identityWallet = new IdentityWallet(
   dataStorage,
   credentialWallet
 );
+
+const load = async (path: string): Promise<Uint8Array> => {
+  const response = await fetch(`/circuits/${path}`);
+  const buffer = await response.arrayBuffer();
+  return new Uint8Array(buffer);
+};
+
+export const circuitStorage = new CircuitStorage(
+  new IndexedDBDataSource<CircuitData>('polygon-id-circuit-storage')
+);
+
+export const initProofService = async (): Promise<ProofService> => {
+  await circuitStorage.saveCircuitData(CircuitId.AtomicQuerySigV2, {
+    circuitId: CircuitId.AtomicQuerySigV2,
+    wasm: await load(`${CircuitId.AtomicQuerySigV2.toString()}/circuit.wasm`),
+    provingKey: await load(
+      `${CircuitId.AtomicQuerySigV2.toString()}/circuit_final.zkey`
+    ),
+    verificationKey: await load(
+      `${CircuitId.AtomicQuerySigV2.toString()}/verification_key.json`
+    ),
+  });
+
+  await circuitStorage.saveCircuitData(CircuitId.StateTransition, {
+    circuitId: CircuitId.StateTransition,
+    wasm: await load(`${CircuitId.StateTransition.toString()}/circuit.wasm`),
+    provingKey: await load(
+      `${CircuitId.StateTransition.toString()}/circuit_final.zkey`
+    ),
+    verificationKey: await load(
+      `${CircuitId.StateTransition.toString()}/verification_key.json`
+    ),
+  });
+
+  const proofService = new ProofService(
+    identityWallet,
+    credentialWallet,
+    circuitStorage,
+    dataStorage.states
+  );
+  return proofService;
+};

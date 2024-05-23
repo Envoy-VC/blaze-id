@@ -6,10 +6,16 @@ import { usePathname } from 'next/navigation';
 
 import React from 'react';
 
+import { circuitStorage, initProofService } from '~/lib/polygon-id';
+
+import { CircuitId } from '@0xpolygonid/js-sdk';
+import { useLiveQuery } from 'dexie-react-hooks';
 import Logo from 'public/logo.png';
+import { toast } from 'sonner';
 
 import { Button } from '~/components/ui/button';
 
+import { CircleCheck, TriangleAlert } from 'lucide-react';
 import {
   CreditCard,
   Presentation,
@@ -43,6 +49,16 @@ const sidebarLinks = [
 
 const Sidebar = () => {
   const pathName = usePathname();
+  const [r, sR] = React.useState<boolean>(false);
+  const circuitsLoaded = useLiveQuery(async () => {
+    try {
+      await circuitStorage.loadCircuitData(CircuitId.StateTransition);
+      await circuitStorage.loadCircuitData(CircuitId.AtomicQuerySigV2);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }, [r, sR]);
   return (
     <div className='w-full max-w-xs'>
       <div className='sticky top-0 flex h-screen flex-col justify-between border px-2 py-4'>
@@ -71,7 +87,29 @@ const Sidebar = () => {
             })}
           </div>
         </div>
-        <div className='m-4'>
+        <div className='m-4 flex flex-col gap-3'>
+          <Button
+            variant={'ghost'}
+            className={`flex h-11 w-full items-center justify-start gap-2 rounded-2xl text-[14px] font-medium`}
+            onClick={async () => {
+              if (!circuitsLoaded) {
+                await initProofService();
+                sR((p) => !p);
+                toast.success('Proof Service Initialized');
+              } else {
+                toast.info('Proof Service Already Initialized');
+              }
+            }}
+          >
+            {circuitsLoaded ? (
+              <CircleCheck size={24} strokeWidth={2} />
+            ) : (
+              <TriangleAlert size={24} strokeWidth={2} />
+            )}
+            {circuitsLoaded
+              ? 'Proof Service Initialized'
+              : 'Initialize Proof Service'}
+          </Button>
           <Button
             asChild
             variant={pathName === '/dashboard/settings' ? 'default' : 'ghost'}

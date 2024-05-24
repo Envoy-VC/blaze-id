@@ -59,7 +59,7 @@ const AddCredential = () => {
   return (
     <Dialog>
       <DialogTrigger>
-        <Button>Add Credential</Button>
+        <Button className='w-full'>Add Credential</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

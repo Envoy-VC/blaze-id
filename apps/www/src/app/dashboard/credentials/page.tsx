@@ -26,7 +26,7 @@ const Dashboard = () => {
             </>
           }
         />
-        <div className='flex flex-col gap-2 max-w-[10rem] w-full'>
+        <div className='flex w-full max-w-[10rem] flex-col gap-2'>
           <Button asChild>
             <Link href='/dashboard/examples'>Issue Credential</Link>
           </Button>

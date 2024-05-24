@@ -37,16 +37,6 @@ const sidebarLinks = [
     href: '/dashboard/credentials',
   },
   {
-    name: 'Presentation',
-    Icon: Presentation,
-    href: '/dashboard/presentation',
-  },
-  {
-    name: 'Proofs',
-    Icon: ShieldCheck,
-    href: '/dashboard/proofs',
-  },
-  {
     name: 'Examples',
     Icon: BookOpenCheck,
     href: '/dashboard/examples',

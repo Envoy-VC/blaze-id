@@ -1,7 +1,7 @@
 'use client';
 
 import { usePolygonID, useVeramo } from '~/lib/hooks';
-import { useBlazeStore } from '~/lib/stores';
+import { useBlazeID } from '~/lib/hooks';
 import { truncate } from '~/lib/utils';
 
 import { useLiveQuery } from 'dexie-react-hooks';
@@ -15,7 +15,7 @@ import {
 } from '~/components/ui/select';
 
 const SelectDID = () => {
-  const { setActiveDID } = useBlazeStore();
+  const { setActiveDID } = useBlazeID();
   const { getAllDIDs } = useVeramo();
   const { getAllDIDs: getAllPolygonIDs } = usePolygonID();
 
@@ -29,7 +29,7 @@ const SelectDID = () => {
       <Select
         onValueChange={(val) => {
           const did = dids?.find((d) => d.did === val);
-          setActiveDID(did!);
+          setActiveDID(did?.did ?? null);
         }}
       >
         <SelectTrigger className='mx-0 w-fit px-2'>

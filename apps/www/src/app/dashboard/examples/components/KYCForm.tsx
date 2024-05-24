@@ -5,8 +5,7 @@ import { useForm } from 'react-hook-form';
 import QRCode from 'react-qr-code';
 
 import { getKYCAgeCredential } from '~/lib/credentials';
-import { usePolygonID } from '~/lib/hooks';
-import { useBlazeStore } from '~/lib/stores';
+import { useBlazeID, usePolygonID } from '~/lib/hooks';
 import { cn } from '~/lib/utils';
 
 import type { W3CCredential } from '@0xpolygonid/js-sdk';
@@ -43,7 +42,7 @@ import { CalendarIcon } from 'lucide-react';
 
 const KYCForm = () => {
   const { issueCredential, getDID } = usePolygonID();
-  const { activeDID } = useBlazeStore();
+  const { activeDID } = useBlazeID();
   const [open, setOpen] = useState<boolean>(false);
   const [credential, setCredential] = useState<W3CCredential>();
 

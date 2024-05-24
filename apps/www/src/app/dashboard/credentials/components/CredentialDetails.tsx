@@ -4,8 +4,7 @@ import React, { useState } from 'react';
 import QRCode from 'react-qr-code';
 
 import { getKYCAgeProofRequest } from '~/lib/credentials';
-import { usePolygonID, useVeramo } from '~/lib/hooks';
-import { useBlazeStore } from '~/lib/stores';
+import { useBlazeID, usePolygonID, useVeramo } from '~/lib/hooks';
 import { truncate } from '~/lib/utils';
 
 import { W3CCredential } from '@0xpolygonid/js-sdk';
@@ -15,7 +14,6 @@ import getWasm from 'shiki/wasm';
 import { toast } from 'sonner';
 
 import { Button } from '~/components/ui/button';
-import { ScrollArea } from '~/components/ui/scroll-area';
 
 import { Copy, ShieldCheck } from 'lucide-react';
 
@@ -27,7 +25,7 @@ interface Props {
 const CredentialDetails = ({ id, type }: Props) => {
   const { getCredentialByHash } = useVeramo();
   const { getCredential, verifyCredential } = usePolygonID();
-  const { activeDID } = useBlazeStore();
+  const { activeDID } = useBlazeID();
 
   const [verifiedProof, setProof] = useState<string | null>(null);
 
@@ -163,7 +161,9 @@ const CredentialDetails = ({ id, type }: Props) => {
         </div>
         {verifiedProof && (
           <div className='w-full py-2'>
-            <div className='py-4 text-lg font-medium px-4'>Credential Proof</div>
+            <div className='px-4 py-4 text-lg font-medium'>
+              Credential Proof
+            </div>
             <div
               className='mx-auto h-[40rem] w-full max-w-[630px] overflow-scroll rounded-xl bg-[#EFF1F5] p-2'
               dangerouslySetInnerHTML={{

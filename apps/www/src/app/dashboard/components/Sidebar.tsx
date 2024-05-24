@@ -16,14 +16,7 @@ import { toast } from 'sonner';
 import { Button } from '~/components/ui/button';
 
 import { CircleCheck, TriangleAlert } from 'lucide-react';
-import {
-  BookOpenCheck,
-  CreditCard,
-  Presentation,
-  Settings,
-  ShieldCheck,
-  UsersRound,
-} from 'lucide-react';
+import { BookOpenCheck, CreditCard, Settings, UsersRound } from 'lucide-react';
 
 const sidebarLinks = [
   {

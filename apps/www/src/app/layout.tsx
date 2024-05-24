@@ -1,11 +1,6 @@
 import localFont from 'next/font/local';
-import { headers } from 'next/headers';
-
-import { wagmiConfig } from '~/lib/viem';
 
 import type { Metadata } from 'next';
-import { cookieToInitialState } from 'wagmi';
-import { Web3Provider } from '~/providers';
 import '~/styles/globals.css';
 import { TRPCReactProvider } from '~/trpc/react';
 
@@ -27,17 +22,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const initialState = cookieToInitialState(
-    wagmiConfig,
-    headers().get('cookie')
-  );
-
   return (
     <html lang='en'>
       <body className={`font-sans ${sfPro.variable}`}>
-        <TRPCReactProvider>
-          <Web3Provider initialState={initialState}>{children}</Web3Provider>
-        </TRPCReactProvider>
+        <TRPCReactProvider>{children}</TRPCReactProvider>
         <Toaster position='bottom-right' />
       </body>
     </html>

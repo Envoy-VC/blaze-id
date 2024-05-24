@@ -1,6 +1,10 @@
+import dynamic from 'next/dynamic';
+
 import React from 'react';
 
-import { Sidebar } from './dashboard/components';
+const Sidebar = dynamic(() => import('./dashboard/components/Sidebar'), {
+  ssr: false,
+});
 
 const NotFound = () => {
   return (

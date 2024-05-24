@@ -6,13 +6,14 @@ import React from 'react';
 import { Button } from '~/components/ui/button';
 
 import { Header } from '../components';
+import AddCredential from './components/AddCredential';
 
 const CredentialsTable = dynamic(() => import('./components/CredentialsTable'));
 
 const Dashboard = () => {
   return (
     <div className='p-4'>
-      <div className='flex flex-col justify-between md:flex-row'>
+      <div className='flex flex-col justify-between gap-4 md:flex-row'>
         <Header
           title='Verifiable Credentials'
           description={
@@ -24,10 +25,13 @@ const Dashboard = () => {
               share and with whom.
             </>
           }
-        />{' '}
-        <Button asChild>
-          <Link href='/dashboard/examples'>Create Credential</Link>
-        </Button>
+        />
+        <div className='flex flex-col gap-2'>
+          <Button asChild>
+            <Link href='/dashboard/examples'>Issue Credential</Link>
+          </Button>
+          <AddCredential />
+        </div>
       </div>
       <div className='py-8'>
         <CredentialsTable />

@@ -44,6 +44,15 @@ const usePolygonID = () => {
     );
     return credential;
   };
+  const importCredential = async (credential: W3CCredential, id: string) => {
+    const did = new core.DID({ id: id.slice(14), method: 'polygonid' });
+    await dataStorage.credential.saveCredential(credential);
+    await identityWallet.addCredentialsToMerkleTree([credential], did);
+    await identityWallet.publishStateToRHS(
+      did,
+      'https://rhs-staging.polygonid.me'
+    );
+  };
 
   const getAllDIDs = async () => {
     const identities = await dataStorage.identity.getAllIdentities();
@@ -95,6 +104,7 @@ const usePolygonID = () => {
     deleteCredential,
     getCredential,
     verifyCredential,
+    importCredential,
   };
 };
 

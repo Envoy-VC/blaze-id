@@ -156,8 +156,19 @@ const CredentialDetails = ({ id, type }: Props) => {
             );
           })}
         </div>
-        <div className='mx-auto py-4'>
+        <div className='mx-auto flex flex-col gap-4 py-4'>
           <QRCode value={JSON.stringify(credential)} size={256 * 2} />
+          <Button
+            className='flex flex-row items-center gap-2'
+            onClick={() => {
+              navigator.clipboard.writeText(
+                JSON.stringify(credential, null, 2)
+              );
+            }}
+          >
+            <Copy size={16} />
+            Copy Credential
+          </Button>
         </div>
         {verifiedProof && (
           <div className='w-full py-2'>
@@ -249,8 +260,19 @@ const CredentialDetails = ({ id, type }: Props) => {
             );
           })}
         </div>
-        <div className='mx-auto py-4'>
+        <div className='mx-auto flex flex-col gap-4 py-4'>
           <QRCode value={JSON.stringify(credential)} size={256 * 2} />
+          <Button
+            className='flex flex-row items-center gap-2'
+            onClick={() => {
+              navigator.clipboard.writeText(
+                JSON.stringify(credential, null, 2)
+              );
+            }}
+          >
+            <Copy size={16} />
+            Copy Credential
+          </Button>
         </div>
       </div>
     );

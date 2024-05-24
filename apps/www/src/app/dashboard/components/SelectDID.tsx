@@ -15,7 +15,7 @@ import {
 } from '~/components/ui/select';
 
 const SelectDID = () => {
-  const { setActiveDID } = useBlazeID();
+  const { activeDID, setActiveDID } = useBlazeID();
   const { getAllDIDs } = useVeramo();
   const { getAllDIDs: getAllPolygonIDs } = usePolygonID();
 
@@ -27,6 +27,7 @@ const SelectDID = () => {
   if (dids)
     return (
       <Select
+        value={activeDID ?? undefined}
         onValueChange={(val) => {
           const did = dids?.find((d) => d.did === val);
           setActiveDID(did?.did ?? null);

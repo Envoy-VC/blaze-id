@@ -6,6 +6,7 @@ import { v4 as uuid } from 'uuid';
 
 import { db as dataStoreDB } from '../storage/datastore';
 import { db as didDB } from '../storage/did';
+import IndexedDBDIDStore from '../storage/did';
 import { agent, veramoDIDManagerOptions } from '../veramo';
 
 export interface CreateKeyDIDOptions {
@@ -46,11 +47,10 @@ const useVeramo = () => {
     try {
       const verifiableCredential =
         await agent.createVerifiableCredential(options);
-      console.log(verifiableCredential);
       const hash = await agent.dataStoreSaveVerifiableCredential({
         verifiableCredential,
       });
-      return hash;
+      return verifiableCredential;
     } catch (error) {
       console.log(error);
     }
@@ -71,13 +71,12 @@ const useVeramo = () => {
   const verifyCredential = async (credential: VerifiableCredential) => {
     const result = await agent.verifyCredential({
       credential,
-      fetchRemoteContexts: true,
     });
     if (result.error) {
       throw new Error(result.error.message);
     }
 
-    return result.verified;
+    return result;
   };
 
   const getDIDByAlias = async (alias: string) => {
@@ -89,6 +88,11 @@ const useVeramo = () => {
 
   const getAllDIDs = async () => {
     const res = await didDB.dids.toArray();
+    return res;
+  };
+
+  const getDID = async (did: string) => {
+    const res = await new IndexedDBDIDStore().getDID({ did });
     return res;
   };
 
@@ -116,6 +120,7 @@ const useVeramo = () => {
     getAllCredentials,
     deleteCredential,
     importCredential,
+    getDID,
   };
 };
 

@@ -23,8 +23,9 @@ interface Props {
 }
 
 const CredentialDetails = ({ id, type }: Props) => {
-  const { getCredentialByHash } = useVeramo();
-  const { getCredential, verifyCredential } = usePolygonID();
+  const { getCredentialByHash, verifyCredential } = useVeramo();
+  const { getCredential, verifyCredential: verifyPolygonIDCredential } =
+    usePolygonID();
   const { activeDID } = useBlazeID();
 
   const [verifiedProof, setProof] = useState<string | null>(null);
@@ -76,7 +77,7 @@ const CredentialDetails = ({ id, type }: Props) => {
                   throw new Error('No Active Polygon ID found');
                 }
                 const req = getKYCAgeProofRequest();
-                const { proof, success } = await verifyCredential(
+                const { proof, success } = await verifyPolygonIDCredential(
                   req,
                   credential,
                   activeDID
@@ -198,7 +199,33 @@ const CredentialDetails = ({ id, type }: Props) => {
           <div className='text-xl font-semibold'>
             {typeof type === 'string' ? type : type![1]}
           </div>
-          <Button variant='outline'>
+          <Button
+            variant='outline'
+            className='flex items-center gap-2'
+            onClick={async () => {
+              const id = toast.loading('Verifying Credentials...');
+              try {
+                if (!activeDID || activeDID.startsWith('did:polygonid')) {
+                  throw new Error(
+                    'No Active did:key, did:web or did:ethr found'
+                  );
+                }
+                delete credential['hash'];
+                const res = await verifyCredential(credential);
+                if (!res.verified) {
+                  throw new Error('Credential Verification Failed');
+                }
+                const code = await getFormattedCode(
+                  JSON.stringify(res, null, 2)
+                );
+                setProof(code);
+                toast.success('Credentials Verified', { id });
+              } catch (error) {
+                console.log(error);
+                toast.error((error as Error).message, { id });
+              }
+            }}
+          >
             <ShieldCheck size={16} />
             Prove Credential
           </Button>
@@ -274,6 +301,19 @@ const CredentialDetails = ({ id, type }: Props) => {
             Copy Credential
           </Button>
         </div>
+        {verifiedProof && (
+          <div className='w-full py-2'>
+            <div className='px-4 py-4 text-lg font-medium'>
+              Credential Proof
+            </div>
+            <div
+              className='mx-auto h-[40rem] w-full max-w-[630px] overflow-scroll rounded-xl bg-[#EFF1F5] p-2'
+              dangerouslySetInnerHTML={{
+                __html: verifiedProof,
+              }}
+            ></div>
+          </div>
+        )}
       </div>
     );
   }

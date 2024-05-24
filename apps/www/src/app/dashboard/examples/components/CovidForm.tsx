@@ -1,15 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { type FieldErrors, useForm } from 'react-hook-form';
 import QRCode from 'react-qr-code';
 
-import { getKYCAgeCredential } from '~/lib/credentials';
-import { useBlazeID, usePolygonID } from '~/lib/hooks';
+import { useBlazeID, useVeramo } from '~/lib/hooks';
 import { cn } from '~/lib/utils';
 
-import type { W3CCredential } from '@0xpolygonid/js-sdk';
 import { zodResolver } from '@hookform/resolvers/zod';
+import type { VerifiableCredential } from '@veramo/core';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -37,15 +36,21 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '~/components/ui/popover';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '~/components/ui/select';
 
 import { CalendarIcon } from 'lucide-react';
 
-const KYCForm = () => {
-  const { issueCredential, getDID } = usePolygonID();
+const CovidForm = () => {
   const { activeDID } = useBlazeID();
+  const { createCredential, getDID } = useVeramo();
   const [open, setOpen] = useState<boolean>(false);
-  const [credential, setCredential] = useState<W3CCredential>();
-
+  const [credential, setCredential] = useState<VerifiableCredential>();
   const form = useForm<FormType>({
     resolver: zodResolver(formSchema),
   });
@@ -53,21 +58,27 @@ const KYCForm = () => {
   const onSubmit = async (data: FormType) => {
     const id = toast.loading('Issuing Credentials..');
     try {
-      const req = getKYCAgeCredential(
-        data.user,
-        data.birthday.getTime(),
-        data.expiry.getTime()
-      );
       if (!activeDID) {
         throw new Error('Set Active DID First.');
       }
       const did = await getDID(activeDID);
       if (!did) {
-        throw new Error('Active DID should be a Polygon ID');
+        throw new Error('Active DID should be did:web, did:key or did:ethr');
       }
-      const credential = await issueCredential(did.did, req);
-      toast.success('Credential Issued', { id });
-      setCredential(credential);
+      const vc = await createCredential({
+        credential: {
+          type: ['VerifiableCredential', 'Covid19VaccineCredential'],
+          issuer: { id: activeDID },
+          credentialSubject: data,
+          expirationDate: data.dateOfExpiry,
+        },
+        proofFormat: 'jwt',
+      });
+      if (!vc) {
+        throw new Error('Failed to create credential');
+      }
+      toast.success('Credential saved successfully', { id });
+      setCredential(vc);
       setOpen(true);
     } catch (error) {
       console.log(error);
@@ -75,21 +86,28 @@ const KYCForm = () => {
     }
   };
 
+  const onError = (errors: FieldErrors<FormType>) => {
+    toast.error('Invalid Inputs');
+  };
+
   return (
     <div className='my-8 w-full max-w-xl justify-start rounded-2xl bg-white p-3 py-6'>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-3'>
+        <form
+          onSubmit={form.handleSubmit(onSubmit, onError)}
+          className='space-y-3'
+        >
           <FormField
             control={form.control}
-            name='user'
+            name='id'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Username</FormLabel>
+                <FormLabel>User DID</FormLabel>
                 <FormControl>
                   <Input placeholder='User DID' {...field} />
                 </FormControl>
                 <FormDescription>
-                  This is your public display name.
+                  User Identifier to issue the credential.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -97,10 +115,86 @@ const KYCForm = () => {
           />
           <FormField
             control={form.control}
-            name='birthday'
+            name='name'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input placeholder='Name' {...field} />
+                </FormControl>
+                <FormDescription>
+                  Please enter your name as per your identification.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='age'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Age</FormLabel>
+                <FormControl>
+                  <Input type='number' placeholder='Age' {...field} />
+                </FormControl>
+                <FormDescription>
+                  Please enter your age as per your identification.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='type'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Vaccine Type</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder='Select Vaccine Type' />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value='pcr'>PCR Test</SelectItem>
+                    <SelectItem value='antigen'>Antigen Test</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormDescription>
+                  Please select the type of vaccine you have taken.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='performer'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Performing Laboratory</FormLabel>
+                <FormControl>
+                  <Input placeholder='Laboratory Name' {...field} />
+                </FormControl>
+                <FormDescription>
+                  Please enter the name of the laboratory where the test was
+                  conducted.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='dateOfApplication'
             render={({ field }) => (
               <FormItem className='flex flex-col'>
-                <FormLabel>Date of birth</FormLabel>
+                <FormLabel>Date of Application</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -126,9 +220,9 @@ const KYCForm = () => {
                       toDate={new Date(Date.now())}
                       toMonth={new Date(Date.now())}
                       toYear={2023}
-                      fromDate={new Date('01-01-1900')}
-                      fromMonth={new Date('01-01-1900')}
-                      fromYear={1900}
+                      fromDate={new Date('01-01-2020')}
+                      fromMonth={new Date('01-01-2020')}
+                      fromYear={2020}
                       captionLayout='dropdown'
                       selected={field.value}
                       onSelect={field.onChange}
@@ -136,17 +230,19 @@ const KYCForm = () => {
                     />
                   </PopoverContent>
                 </Popover>
-                <FormDescription>Birth date for KYC Credential</FormDescription>
+                <FormDescription>
+                  Date of application for the test.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
           <FormField
             control={form.control}
-            name='expiry'
+            name='dateOfExpiry'
             render={({ field }) => (
               <FormItem className='flex flex-col'>
-                <FormLabel>Expiry Date</FormLabel>
+                <FormLabel>Date of Expiry</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -171,21 +267,18 @@ const KYCForm = () => {
                       mode='single'
                       fromDate={new Date(Date.now())}
                       fromMonth={new Date(Date.now())}
-                      fromYear={2022}
-                      toDate={new Date('01-01-2200')}
-                      toMonth={new Date('01-01-2200')}
-                      toYear={2200}
+                      fromYear={2023}
+                      toDate={new Date('01-01-2050')}
+                      toMonth={new Date('01-01-2050')}
+                      toYear={2050}
                       captionLayout='dropdown'
                       selected={field.value}
                       onSelect={field.onChange}
-                      disabled={(date) => date < new Date()}
                       initialFocus
                     />
                   </PopoverContent>
                 </Popover>
-                <FormDescription>
-                  Expiry date for KYC Credential
-                </FormDescription>
+                <FormDescription>Date of expiry of the test.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -200,7 +293,9 @@ const KYCForm = () => {
               Share Credential
             </DialogTitle>
             <div className='flex flex-col items-center justify-center gap-4'>
-              <QRCode value={JSON.stringify(credential)} size={256 * 2} />
+              {credential && (
+                <QRCode value={JSON.stringify(credential)} size={256 * 2} />
+              )}
               <Button
                 type='button'
                 onClick={() => {
@@ -218,18 +313,27 @@ const KYCForm = () => {
   );
 };
 
-const formSchema = z.object({
-  user: z.string().refine((value) => {
-    return value.startsWith('did:polygonid');
-  }),
-  birthday: z.date({
-    required_error: 'A date of birth is required.',
-  }),
-  expiry: z.date({
-    required_error: 'A expiry date is required.',
-  }),
-});
+const formSchema = z
+  .object({
+    id: z.string(),
+    name: z.string(),
+    age: z.string(),
+    type: z.enum(['pcr', 'antigen']),
+    performer: z.string(),
+    dateOfApplication: z.date({
+      required_error: 'Date of Application is required',
+    }),
+    dateOfExpiry: z.date({
+      required_error: 'Date of Expiry is required',
+    }),
+  })
+  .refine((value) => {
+    if (value.dateOfApplication > value.dateOfExpiry) {
+      return false;
+    }
+    return true;
+  });
 
 type FormType = z.infer<typeof formSchema>;
 
-export default KYCForm;
+export default CovidForm;

@@ -59,7 +59,7 @@ const Sidebar = () => {
           <div className='mt-3 w-full border-t border-neutral-300 px-4' />
           <div className='flex w-full flex-col gap-4 px-4 py-6'>
             {sidebarLinks.map(({ name, Icon, href }) => {
-              const isActive = pathName === href;
+              const isActive = pathName.split('/')[2] === href.split('/')[2];
               return (
                 <Button
                   key={name}

@@ -25,10 +25,12 @@ export const getKYCAgeCredential = (
       id: 'https://rhs-staging.polygonid.me',
     },
   };
+
   return credential;
 };
 
 export const getKYCAgeProofRequest = () => {
+  const required = Date.now() - 18 * 365 * 24 * 60 * 60 * 1000;
   const req: ZeroKnowledgeProofRequest = {
     id: 1,
     circuitId: CircuitId.AtomicQuerySigV2,
@@ -40,10 +42,7 @@ export const getKYCAgeProofRequest = () => {
         'https://raw.githubusercontent.com/iden3/claim-schema-vocab/main/schemas/json-ld/kyc-v3.json-ld',
       credentialSubject: {
         birthday: {
-          $lte: 1148822588722,
-        },
-        documentType: {
-          $eq: 99,
+          $lt: required,
         },
       },
     },

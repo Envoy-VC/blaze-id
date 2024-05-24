@@ -3,10 +3,13 @@
 import React from 'react';
 import QRCode from 'react-qr-code';
 
+import { getKYCAgeProofRequest } from '~/lib/credentials';
 import { usePolygonID, useVeramo } from '~/lib/hooks';
+import { useBlazeStore } from '~/lib/stores';
 
 import { W3CCredential } from '@0xpolygonid/js-sdk';
 import { useLiveQuery } from 'dexie-react-hooks';
+import { toast } from 'sonner';
 
 import { Button } from '~/components/ui/button';
 
@@ -23,7 +26,8 @@ const truncate = (value: string, len: number): string => {
 
 const CredentialDetails = ({ id, type }: Props) => {
   const { getCredentialByHash } = useVeramo();
-  const { getCredential } = usePolygonID();
+  const { getCredential, verifyCredential } = usePolygonID();
+  const { activeDID } = useBlazeStore();
 
   const credential = useLiveQuery(async () => {
     if (type === 'polygonid') {
@@ -48,7 +52,31 @@ const CredentialDetails = ({ id, type }: Props) => {
       <div className='mx-auto my-12 flex w-full max-w-2xl flex-col gap-2 rounded-2xl bg-white'>
         <div className='flex w-full flex-row items-center justify-between gap-2 px-4 py-2'>
           <div className='text-xl font-semibold'>{type[1]}</div>
-          <Button variant='outline'>
+          <Button
+            variant='outline'
+            onClick={async () => {
+              const id = toast.loading('Verifying Credentials...');
+              try {
+                if (!activeDID || !activeDID.startsWith('did:polygonid')) {
+                  throw new Error('No Active Polygon ID found');
+                }
+                const req = getKYCAgeProofRequest();
+                const { proof, success } = await verifyCredential(
+                  req,
+                  credential,
+                  activeDID
+                );
+                if (!success) {
+                  throw new Error('Credential Verification Failed');
+                }
+                console.log(proof, success);
+                toast.success('Credentials Verified', { id });
+              } catch (error) {
+                console.log(error);
+                toast.error((error as Error).message, { id });
+              }
+            }}
+          >
             <ShieldCheck size={16} />
             Prove Credential
           </Button>

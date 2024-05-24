@@ -1,12 +1,13 @@
 import {
+  CircuitId,
   type CredentialRequest,
   CredentialStatusType,
-  type Identity,
-  byteEncoder,
+  W3CCredential,
+  type ZeroKnowledgeProofRequest,
   core,
 } from '@0xpolygonid/js-sdk';
 
-import { dataStorage } from '../polygon-id';
+import { dataStorage, proofService } from '../polygon-id';
 import { credentialWallet, identityWallet } from '../polygon-id';
 
 const usePolygonID = () => {
@@ -64,6 +65,25 @@ const usePolygonID = () => {
     return credential;
   };
 
+  const verifyCredential = async (
+    proofReq: ZeroKnowledgeProofRequest,
+    credential: W3CCredential,
+    user: string
+  ) => {
+    const did = new core.DID({ id: user.slice(14), method: 'polygonid' });
+    const proof = await proofService.generateProof(proofReq, did, {
+      skipRevocation: true,
+      credential,
+    });
+
+    const success = await proofService.verifyProof(
+      proof,
+      CircuitId.AtomicQuerySigV2
+    );
+
+    return { proof, success };
+  };
+
   return {
     identityWallet,
     credentialWallet,
@@ -74,6 +94,7 @@ const usePolygonID = () => {
     issueCredential,
     deleteCredential,
     getCredential,
+    verifyCredential,
   };
 };
 

@@ -26,6 +26,10 @@ import {
   defaultEthConnectionConfig,
 } from '@0xpolygonid/js-sdk';
 
+let ethConfig = defaultEthConnectionConfig;
+ethConfig.contractAddress = '0x1a4cC30f2aA0377b0c3bc9848766D90cb4404124';
+ethConfig.url = 'https://rpc-amoy.polygon.technology';
+
 export const dataStorage = {
   credential: new CredentialStorage(
     new IndexedDBDataSource<W3CCredential>('polygon-id-credential-store')
@@ -35,7 +39,7 @@ export const dataStorage = {
     new IndexedDBDataSource<Profile>('polygon-id-profile-store')
   ),
   mt: new MerkleTreeIndexedDBStorage(40),
-  states: new EthStateStorage(defaultEthConnectionConfig),
+  states: new EthStateStorage(ethConfig),
 };
 
 const memoryKeyStore = new IndexedDBPrivateKeyStore();
@@ -48,6 +52,7 @@ statusRegistry.register(
   CredentialStatusType.SparseMerkleTreeProof,
   new IssuerResolver()
 );
+
 statusRegistry.register(
   CredentialStatusType.Iden3ReverseSparseMerkleTreeProof,
   new RHSResolver(dataStorage.states)

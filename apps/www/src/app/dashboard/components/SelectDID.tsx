@@ -2,6 +2,7 @@
 
 import { usePolygonID, useVeramo } from '~/lib/hooks';
 import { useBlazeStore } from '~/lib/stores';
+import { truncate } from '~/lib/utils';
 
 import { useLiveQuery } from 'dexie-react-hooks';
 
@@ -37,7 +38,7 @@ const SelectDID = () => {
         <SelectContent>
           {dids?.map((did) => (
             <SelectItem key={did.did} value={did.did}>
-              {did.did}
+              {truncate(did.did, 24, true)}
             </SelectItem>
           ))}
         </SelectContent>

@@ -77,7 +77,9 @@ const CreateForm = () => {
         id: t,
       });
     } finally {
-      form.reset();
+      form.reset({
+        type: 'key',
+      });
     }
   };
   const onInvalid = async (errors: FieldErrors<FormType>) => {

@@ -2,10 +2,9 @@
 
 import { useRouter } from 'next/navigation';
 
-import QRCode from 'react-qr-code';
-
 import { usePolygonID, useVeramo } from '~/lib/hooks';
 import type { Credential as VeramoCredential } from '~/lib/storage/datastore';
+import { truncate } from '~/lib/utils';
 
 import { W3CCredential } from '@0xpolygonid/js-sdk';
 import type { ColumnDef } from '@tanstack/react-table';
@@ -15,16 +14,8 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { toast } from 'sonner';
-import { create } from 'zustand';
 
 import { Button } from '~/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '~/components/ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -44,29 +35,6 @@ import {
 
 import { MoreHorizontal } from 'lucide-react';
 
-interface Store {
-  isOpen: boolean;
-  isShareOpen: boolean;
-  data: VeramoCredential | W3CCredential | null;
-  setOpen(value: boolean, data: VeramoCredential | W3CCredential | null): void;
-  setIsShareOpen(
-    value: boolean,
-    data: VeramoCredential | W3CCredential | null
-  ): void;
-}
-
-const useCredentialsStore = create<Store>((set) => ({
-  isOpen: false,
-  isShareOpen: false,
-  data: null,
-  setOpen: (value, data) => set({ isOpen: value, data }),
-  setIsShareOpen: (value, data) => set({ isShareOpen: value, data }),
-}));
-
-const truncate = (value: string, length: number) => {
-  return value.length > length ? value.substring(0, length) + '...' : value;
-};
-
 export type Data = {
   id: string;
   type: string[];
@@ -81,7 +49,7 @@ export const columns: ColumnDef<Data>[] = [
     header: 'Credential ID',
     cell: ({ row }) => {
       const credential = row.original;
-      return truncate(credential.id, 24);
+      return truncate(credential.id, 24, true);
     },
   },
   {
@@ -97,7 +65,7 @@ export const columns: ColumnDef<Data>[] = [
     header: 'Issuer',
     cell: ({ row }) => {
       const credential = row.original;
-      return truncate(credential.issuer, 24);
+      return truncate(credential.issuer, 24, true);
     },
   },
   {
@@ -115,7 +83,6 @@ export const columns: ColumnDef<Data>[] = [
       const router = useRouter();
       const { deleteCredential } = useVeramo();
       const { deleteCredential: deletePolygonIDCredential } = usePolygonID();
-      const { setIsShareOpen } = useCredentialsStore();
 
       const onDelete = async () => {
         if (credential.data instanceof W3CCredential) {
@@ -163,13 +130,6 @@ export const columns: ColumnDef<Data>[] = [
             >
               Show Credential
             </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => {
-                setIsShareOpen(true, credential.data);
-              }}
-            >
-              Share Credential
-            </DropdownMenuItem>
             <DropdownMenuItem onClick={onDelete}>
               Delete Credential
             </DropdownMenuItem>
@@ -184,13 +144,6 @@ export const columns: ColumnDef<Data>[] = [
 export default function CredentialsTable() {
   const { getAllCredentials } = useVeramo();
   const { getAllCredentials: getAllPolygonCredentials } = usePolygonID();
-  const {
-    isOpen,
-    data: cred,
-    setOpen,
-    isShareOpen,
-    setIsShareOpen,
-  } = useCredentialsStore();
 
   const data = useLiveQuery(async () => {
     const vc = await getAllCredentials();
@@ -268,53 +221,6 @@ export default function CredentialsTable() {
           )}
         </TableBody>
       </Table>
-      <Dialog
-        open={isOpen}
-        onOpenChange={(open) => {
-          if (!open) {
-            setOpen(false, null);
-          } else {
-            setOpen(true, cred);
-          }
-        }}
-      >
-        <DialogContent className='h-[40rem] w-full max-w-3xl overflow-scroll'>
-          <DialogHeader>
-            <DialogTitle>Credential</DialogTitle>
-          </DialogHeader>
-          <pre className='break-all'>{JSON.stringify(cred, null, 2)}</pre>
-        </DialogContent>
-      </Dialog>
-      <Dialog
-        open={isShareOpen}
-        onOpenChange={(open) => {
-          if (!open) {
-            setIsShareOpen(false, null);
-          } else {
-            setIsShareOpen(true, cred);
-          }
-        }}
-      >
-        <DialogContent className='m-0 w-full max-w-xl px-4'>
-          <DialogHeader>
-            <DialogTitle className='mb-4 text-center'>
-              Share Credential
-            </DialogTitle>
-            <div className='flex flex-col items-center justify-center gap-4'>
-              {cred && <QRCode value={JSON.stringify(cred)} size={256 * 2} />}
-              <Button
-                type='button'
-                onClick={() => {
-                  navigator.clipboard.writeText(JSON.stringify(cred));
-                  toast.success('Credential Copied to Clipboard');
-                }}
-              >
-                Copy Credential
-              </Button>
-            </div>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

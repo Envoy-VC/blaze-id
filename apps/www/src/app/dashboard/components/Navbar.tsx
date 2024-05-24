@@ -1,14 +1,11 @@
 import React from 'react';
 
 import { getSession } from '~/lib/iron-session';
+import { truncate } from '~/lib/utils';
 
 import { Button } from '~/components/ui/button';
 
 import SelectDID from './SelectDID';
-
-const formattedAddress = (address: string) => {
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
-};
 
 const Navbar = async () => {
   const session = await getSession();
@@ -30,7 +27,7 @@ const AccountButton = ({ username }: { username: string }) => {
           className='h-9 w-9 rounded-full'
         />
         <div className='flex flex-col items-start'>
-          <div className='font-semibold'>{formattedAddress(username)}</div>
+          <div className='font-semibold'>{truncate(username, 12, true)}</div>
         </div>
       </div>
     </Button>

@@ -47,7 +47,7 @@ const Create = () => {
             if (!data) {
               return;
             }
-            router.push('/dashboard');
+            // router.push('/dashboard');
           } catch (error) {
             console.error(error);
           }

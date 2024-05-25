@@ -12,12 +12,13 @@ import type {
 } from '@lit-protocol/types';
 import { compareAsc } from 'date-fns';
 import { toast } from 'sonner';
+import { api } from '~/trpc/react';
 
 import { getSession, login } from '../iron-session';
-import { getCapacityDelegationAuthSig } from '../lit';
 
 export default function useLitAuth() {
   const { client, authClient, authProvider } = useLitStore();
+  const { mutateAsync } = api.lit.getCapacityDelegationAuthSig.useMutation();
 
   const fetchMyPKPs = useCallback(
     async (authMethod: AuthMethod): Promise<IRelayPKP[]> => {
@@ -67,8 +68,11 @@ export default function useLitAuth() {
         return response.authSig;
       };
 
-      const { capacityDelegationAuthSig } = await getCapacityDelegationAuthSig({
+      const nonce = await client.getLatestBlockhash();
+
+      const { capacityDelegationAuthSig } = await mutateAsync({
         delegateeAddresses: [pkp.ethAddress],
+        nonce,
       });
 
       const sessionSigs = await client.getSessionSigs({

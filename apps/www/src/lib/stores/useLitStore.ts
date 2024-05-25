@@ -6,11 +6,11 @@ import { create } from 'zustand';
 
 const litNetwork: LIT_NETWORKS_KEYS = 'habanero';
 
-const litClient = new LitNodeClient({
+export const litClient = new LitNodeClient({
   litNetwork,
 });
 
-export const litAuthClient: LitAuthClient = new LitAuthClient({
+const litAuthClient: LitAuthClient = new LitAuthClient({
   litRelayConfig: {
     relayApiKey: 'test-api-key',
   },

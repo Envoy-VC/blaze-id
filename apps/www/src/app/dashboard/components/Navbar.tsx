@@ -12,7 +12,7 @@ const Navbar = async () => {
   return (
     <div className='flex h-[10dvh] flex-row items-center justify-between border-b px-4 py-2 sm:h-[7dvh]'>
       <SelectDID />
-      <AccountButton username={session.username} />
+      <AccountButton username={session.pkp.ethAddress} />
     </div>
   );
 };

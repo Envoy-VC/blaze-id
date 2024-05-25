@@ -3,11 +3,18 @@ import { useCallback, useEffect } from 'react';
 import { useLitStore } from '~/lib/stores';
 
 import { LitAbility, LitActionResource } from '@lit-protocol/auth-helpers';
-import type { AuthMethod, IRelayPKP } from '@lit-protocol/types';
+import { LitNetwork } from '@lit-protocol/constants';
+import { PKPEthersWallet } from '@lit-protocol/pkp-ethers';
+import type {
+  AuthCallbackParams,
+  AuthMethod,
+  IRelayPKP,
+} from '@lit-protocol/types';
 import { compareAsc } from 'date-fns';
 import { toast } from 'sonner';
 
 import { getSession, login } from '../iron-session';
+import { getCapacityDelegationAuthSig } from '../lit';
 
 export default function useLitAuth() {
   const { client, authClient, authProvider } = useLitStore();
@@ -21,7 +28,21 @@ export default function useLitAuth() {
   );
 
   const createSession = useCallback(
-    async (pkpPublicKey: string, authMethod: AuthMethod) => {
+    async (pkp: IRelayPKP, authMethod: AuthMethod) => {
+      const resourceAbilities = [
+        {
+          resource: new LitActionResource('*'),
+          ability: LitAbility.LitActionExecution,
+        },
+        {
+          resource: new LitActionResource('*'),
+          ability: LitAbility.PKPSigning,
+        },
+        {
+          resource: new LitActionResource('*'),
+          ability: LitAbility.AccessControlConditionDecryption,
+        },
+      ];
       const session = await getSession();
       const isNotExpired =
         compareAsc(new Date(session.expires ?? 1), Date.now()) == 1;
@@ -32,36 +53,56 @@ export default function useLitAuth() {
         };
       }
       const expiry = authClient!.litNodeClient.getExpiration();
-      const sessionSigs = await authProvider.getSessionSigs({
-        pkpPublicKey: pkpPublicKey,
-        authMethod,
-        sessionSigsParams: {
-          chain: 'ethereum',
-          resourceAbilityRequests: [
-            {
-              resource: new LitActionResource('*'),
-              ability: LitAbility.LitActionExecution,
-            },
-          ],
-        },
+      const authNeededCallback = async (params: AuthCallbackParams) => {
+        const sessionKeyPair = client.getSessionKey();
+        const response = await client.signSessionKey({
+          sessionKey: sessionKeyPair,
+          statement: params.statement,
+          authMethods: [authMethod],
+          pkpPublicKey: pkp.publicKey,
+          expiration: params.expiration,
+          resources: params.resources,
+          chainId: 1,
+        });
+        return response.authSig;
+      };
+
+      const { capacityDelegationAuthSig } = await getCapacityDelegationAuthSig({
+        delegateeAddresses: [pkp.ethAddress],
       });
+
+      const sessionSigs = await client.getSessionSigs({
+        chain: 'ethereum',
+        resourceAbilityRequests: resourceAbilities,
+        capacityDelegationAuthSig,
+        authNeededCallback,
+      });
+
       return { sessionSigs, expiry };
     },
     [authClient]
   );
+
+  const getPKPClient = async () => {
+    const { pkp, sessionSigs } = await getSession();
+    const pkpWallet = new PKPEthersWallet({
+      litNetwork: LitNetwork.Habanero,
+      pkpPubKey: pkp.publicKey,
+      controllerSessionSigs: sessionSigs,
+    });
+    await pkpWallet.init();
+    return pkpWallet;
+  };
 
   const handleAuth = useCallback(
     async (authMethod: AuthMethod) => {
       try {
         const pkps = await fetchMyPKPs(authMethod);
         const account = 0;
-        const pub_key = pkps[account]!.publicKey;
-        const { sessionSigs, expiry } = await createSession(
-          pub_key,
-          authMethod
-        );
+        const pkp = pkps[account]!;
+        const { sessionSigs, expiry } = await createSession(pkp, authMethod);
         return {
-          username: pkps[account]?.ethAddress!,
+          pkp: pkps[account],
           sessionSigs,
           expiry,
         };
@@ -82,7 +123,7 @@ export default function useLitAuth() {
         throw new Error('Authentication failed');
       }
       const { success } = await login({
-        username: data.username,
+        pkp: data.pkp!,
         isLoggedIn: true,
         expires: data.expiry,
         sessionSigs: data.sessionSigs,
@@ -154,5 +195,6 @@ export default function useLitAuth() {
   return {
     authWithPasskey,
     mintPKP,
+    getPKPClient,
   };
 }

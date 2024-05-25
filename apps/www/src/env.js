@@ -7,9 +7,12 @@ export const env = createEnv({
     NODE_ENV: z.enum(['development', 'test', 'production']),
   },
   client: {
+    NEXT_PUBLIC_CAPACITY_CREDITS_PK: z.string().min(1),
     NEXT_PUBLIC_WALLETCONNECT_ID: z.string().min(1),
   },
   experimental__runtimeEnv: {
+    NEXT_PUBLIC_CAPACITY_CREDITS_PK:
+      process.env.NEXT_PUBLIC_CAPACITY_CREDITS_PK,
     NEXT_PUBLIC_WALLETCONNECT_ID: process.env.NEXT_PUBLIC_WALLETCONNECT_ID,
   },
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,

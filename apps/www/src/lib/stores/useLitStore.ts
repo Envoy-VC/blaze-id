@@ -4,16 +4,18 @@ import { LitNodeClient } from '@lit-protocol/lit-node-client';
 import type { LIT_NETWORKS_KEYS } from '@lit-protocol/types';
 import { create } from 'zustand';
 
-const litNetwork: LIT_NETWORKS_KEYS = 'habanero';
+const litNetwork: LIT_NETWORKS_KEYS = 'cayenne';
 
 export const litClient = new LitNodeClient({
   litNetwork,
+  debug: true,
 });
 
 const litAuthClient: LitAuthClient = new LitAuthClient({
   litRelayConfig: {
     relayApiKey: 'test-api-key',
   },
+
   litNodeClient: litClient,
 });
 

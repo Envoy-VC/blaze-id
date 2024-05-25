@@ -3,22 +3,30 @@ import { useCallback, useEffect } from 'react';
 import { useLitStore } from '~/lib/stores';
 
 import { LitAbility, LitActionResource } from '@lit-protocol/auth-helpers';
-import { LitNetwork } from '@lit-protocol/constants';
-import { PKPEthersWallet } from '@lit-protocol/pkp-ethers';
+import { encryptString } from '@lit-protocol/lit-node-client';
 import type {
   AuthCallbackParams,
   AuthMethod,
   IRelayPKP,
+  SessionSigs,
 } from '@lit-protocol/types';
 import { compareAsc } from 'date-fns';
 import { toast } from 'sonner';
+import { useLocalStorage } from 'usehooks-ts';
 import { api } from '~/trpc/react';
 
 import { getSession, login } from '../iron-session';
+import { decryptLitActionCode, getAccessControlConditions } from '../lit';
 
 export default function useLitAuth() {
+  const [sessionSigs, setSessionSigs] = useLocalStorage<SessionSigs | null>(
+    'sessionSigs',
+    null
+  );
   const { client, authClient, authProvider } = useLitStore();
   const { mutateAsync } = api.lit.getCapacityDelegationAuthSig.useMutation();
+  const upload = api.storage.upload.useMutation();
+  const resolve = api.storage.resolve.useMutation();
 
   const fetchMyPKPs = useCallback(
     async (authMethod: AuthMethod): Promise<IRelayPKP[]> => {
@@ -43,17 +51,20 @@ export default function useLitAuth() {
           resource: new LitActionResource('*'),
           ability: LitAbility.AccessControlConditionDecryption,
         },
+        {
+          resource: new LitActionResource('*'),
+          ability: LitAbility.AccessControlConditionSigning,
+        },
       ];
+
+      const expiry = authClient!.litNodeClient.getExpiration();
       const session = await getSession();
-      const isNotExpired =
-        compareAsc(new Date(session.expires ?? 1), Date.now()) == 1;
-      if (isNotExpired) {
+      if (compareAsc(session.expires, Date.now()) === 1 && sessionSigs) {
         return {
-          sessionSigs: session.sessionSigs,
+          sessionSigs,
           expiry: session.expires,
         };
       }
-      const expiry = authClient!.litNodeClient.getExpiration();
       const authNeededCallback = async (params: AuthCallbackParams) => {
         const sessionKeyPair = client.getSessionKey();
         const response = await client.signSessionKey({
@@ -68,34 +79,68 @@ export default function useLitAuth() {
         return response.authSig;
       };
 
-      const nonce = await client.getLatestBlockhash();
-
-      const { capacityDelegationAuthSig } = await mutateAsync({
-        delegateeAddresses: [pkp.ethAddress],
-        nonce,
-      });
-
-      const sessionSigs = await client.getSessionSigs({
+      const sigs = await client.getSessionSigs({
         chain: 'ethereum',
         resourceAbilityRequests: resourceAbilities,
-        capacityDelegationAuthSig,
         authNeededCallback,
       });
 
-      return { sessionSigs, expiry };
+      setSessionSigs(sigs);
+
+      return { sessionSigs: sigs, expiry };
     },
     [authClient]
   );
 
-  const getPKPClient = async () => {
-    const { pkp, sessionSigs } = await getSession();
-    const pkpWallet = new PKPEthersWallet({
-      litNetwork: LitNetwork.Habanero,
-      pkpPubKey: pkp.publicKey,
-      controllerSessionSigs: sessionSigs,
+  const encryptAndStore = async (data: string) => {
+    if (!client.ready) {
+      await client.connect();
+    }
+    if (!sessionSigs) {
+      throw new Error('Session not found');
+    }
+    const { pkp } = await getSession();
+    const accessControlConditions = getAccessControlConditions(pkp.ethAddress);
+    const res = await encryptString(
+      {
+        chain: 'ethereum',
+        sessionSigs,
+        accessControlConditions,
+        dataToEncrypt: data,
+      },
+      client
+    );
+
+    const cid = await upload.mutateAsync({ data: JSON.stringify(res) });
+
+    return cid;
+  };
+
+  const decryptString = async (uri: string) => {
+    if (!client.ready) {
+      await client.connect();
+    }
+    if (!sessionSigs) {
+      throw new Error('Session not found');
+    }
+    const { pkp } = await getSession();
+    const { ciphertext, dataToEncryptHash } = await resolve.mutateAsync({
+      uri,
     });
-    await pkpWallet.init();
-    return pkpWallet;
+    const accessControlConditions = getAccessControlConditions(pkp.ethAddress);
+
+    const res = await client.executeJs({
+      code: decryptLitActionCode,
+      sessionSigs,
+      jsParams: {
+        accessControlConditions,
+        ciphertext,
+        dataToEncryptHash,
+      },
+    });
+
+    const parsed = JSON.parse(res.response);
+    return parsed;
   };
 
   const handleAuth = useCallback(
@@ -120,17 +165,22 @@ export default function useLitAuth() {
   const authWithPasskey = useCallback(async () => {
     const t = toast.loading('Authenticating...');
     try {
+      if (!client.ready) {
+        await client.connect();
+      }
       const authMethod = await authProvider.authenticate();
       const data = await handleAuth(authMethod);
 
       if (!data) {
         throw new Error('Authentication failed');
       }
+      if (!data.pkp) {
+        throw new Error('No PKP found');
+      }
       const { success } = await login({
-        pkp: data.pkp!,
+        pkp: data.pkp,
         isLoggedIn: true,
         expires: data.expiry,
-        sessionSigs: data.sessionSigs,
       });
       if (!success) {
         throw new Error('Failed to login');
@@ -188,17 +238,21 @@ export default function useLitAuth() {
 
   useEffect(() => {
     const run = async () => {
-      const connectedNodes = client.connectedNodes.size;
-      if (connectedNodes === 0) {
+      if (!client.ready) {
         await client.connect();
       }
     };
-    run();
+    run().catch((error) => console.error(error));
+
+    return () => {
+      client.disconnect();
+    };
   }, [client]);
 
   return {
     authWithPasskey,
     mintPKP,
-    getPKPClient,
+    encryptAndStore,
+    decryptString,
   };
 }

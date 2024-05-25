@@ -13,10 +13,14 @@ import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 export const litRouter = createTRPCRouter({
   getCapacityDelegationAuthSig: publicProcedure
     .input(
-      z.object({ delegateeAddresses: z.array(z.string()), nonce: z.string() })
+      z.object({
+        delegateeAddresses: z.array(z.string()),
+        nonce: z.string(),
+        expiry: z.string(),
+      })
     )
     .mutation(async ({ input }) => {
-      const { delegateeAddresses, nonce } = input;
+      const { delegateeAddresses, nonce, expiry } = input;
 
       const provider = new ethers.providers.JsonRpcProvider({
         skipFetchSetup: true,
@@ -25,7 +29,6 @@ export const litRouter = createTRPCRouter({
       const wallet = new Wallet(env.CAPACITY_CREDITS_PK, provider);
       const ownerAddr = wallet.address;
       const _domain = 'example.com';
-      const _expiration = new Date(Date.now() + 1000 * 60 * 7).toISOString();
       const _statement = '';
       const _uses = '1000';
       const capacityTokenId = '1321';
@@ -58,7 +61,7 @@ export const litRouter = createTRPCRouter({
         version: '1',
         chainId: 1,
         nonce: nonce,
-        expirationTime: _expiration,
+        expirationTime: expiry,
       });
       siweMessage = recapObject.addToSiweMessage(siweMessage);
 

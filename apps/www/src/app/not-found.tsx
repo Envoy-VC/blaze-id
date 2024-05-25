@@ -1,16 +1,20 @@
-import dynamic from 'next/dynamic';
+import Link from 'next/link';
 
 import React from 'react';
 
-const Sidebar = dynamic(() => import('./dashboard/components/Sidebar'), {
-  ssr: false,
-});
+import { Button } from '~/components/ui/button';
 
 const NotFound = () => {
   return (
-    <div className='flex flex-row'>
-      <Sidebar />
-      Not Found
+    <div className='flex h-screen w-full flex-col items-center justify-center gap-4'>
+      <img
+        src='https://img.freepik.com/free-vector/404-error-with-people-holding-numbers-concept-illustration_114360-7903.jpg'
+        alt=''
+        className='w-full max-w-xl'
+      />
+      <Button>
+        <Link href='/'>Go back home</Link>
+      </Button>
     </div>
   );
 };

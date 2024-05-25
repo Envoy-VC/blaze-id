@@ -11,7 +11,6 @@ export interface SessionData {
   pkp: IRelayPKP;
   isLoggedIn: boolean;
   expires: string;
-  sessionSigs: SessionSigs;
 }
 
 const sessionOptions: SessionOptions = {

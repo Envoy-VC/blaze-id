@@ -3,6 +3,7 @@ import { z } from 'zod';
 
 export const env = createEnv({
   server: {
+    TW_SECRET_KEY: z.string().min(1),
     IRON_SESSION_PASSWORD: z.string().min(1),
     CAPACITY_CREDITS_PK: z.string().min(1),
     NODE_ENV: z.enum(['development', 'test', 'production']),

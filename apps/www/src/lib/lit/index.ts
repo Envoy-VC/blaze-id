@@ -14,7 +14,7 @@ export const getCapacityDelegationAuthSig = async ({
     await litClient.createCapacityDelegationAuthSig({
       uses: '1000',
       dAppOwnerWallet: wallet,
-      capacityTokenId: '1319',
+      capacityTokenId: '1321',
       delegateeAddresses: delegateeAddresses,
     });
   return { capacityDelegationAuthSig };

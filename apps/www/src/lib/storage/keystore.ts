@@ -13,7 +13,7 @@ export class KeyStoreDatabase extends Dexie {
   }
 }
 
-const db = new KeyStoreDatabase();
+export const db = new KeyStoreDatabase();
 
 export default class IndexedDBKeyStore extends AbstractKeyStore {
   constructor() {

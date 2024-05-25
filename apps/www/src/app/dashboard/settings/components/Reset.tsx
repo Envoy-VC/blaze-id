@@ -1,6 +1,10 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
 import React from 'react';
+
+import { logout } from '~/lib/iron-session';
 
 import {
   AlertDialog,
@@ -16,6 +20,7 @@ import {
 import { Button } from '~/components/ui/button';
 
 const Reset = () => {
+  const router = useRouter();
   return (
     <div className='flex w-full flex-row items-center justify-between gap-3'>
       <div>
@@ -40,20 +45,16 @@ const Reset = () => {
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction>
               <Button
-                onClick={() => {
-                  indexedDB
-                    .databases()
-                    .then((dbs) => {
-                      dbs.forEach((db) => {
-                        // Don't delete the circuit storage database
-                        if (db.name !== 'polygon-id-circuit-storage-db') {
-                          indexedDB.deleteDatabase(db.name ?? '');
-                        }
-                      });
-                    })
-                    .then(() => {
-                      window.location.reload();
-                    });
+                onClick={async () => {
+                  const dbs = await indexedDB.databases();
+                  for (const db of dbs) {
+                    if (db.name !== 'polygon-id-circuit-storage-db') {
+                      indexedDB.deleteDatabase(db.name ?? '');
+                    }
+                  }
+                  localStorage.clear();
+                  await logout();
+                  router.push('/');
                 }}
               >
                 Reset Wallet

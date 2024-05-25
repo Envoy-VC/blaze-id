@@ -17,12 +17,11 @@ import {
   IssuerResolver,
   KMS,
   KmsKeyType,
-  MerkleTreeIndexedDBStorage,
+  MerkleTreeLocalStorage,
   type Profile,
   ProofService,
   RHSResolver,
   W3CCredential,
-  core,
   defaultEthConnectionConfig,
 } from '@0xpolygonid/js-sdk';
 
@@ -38,7 +37,7 @@ export const dataStorage = {
     new IndexedDBDataSource<Identity>('polygon-id-identity-store'),
     new IndexedDBDataSource<Profile>('polygon-id-profile-store')
   ),
-  mt: new MerkleTreeIndexedDBStorage(40),
+  mt: new MerkleTreeLocalStorage(40),
   states: new EthStateStorage(ethConfig),
 };
 

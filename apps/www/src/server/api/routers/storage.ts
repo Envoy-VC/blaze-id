@@ -22,7 +22,7 @@ export const storageRouter = createTRPCRouter({
       const storage = new ThirdwebStorage({
         secretKey: env.TW_SECRET_KEY,
       });
-      const data = await storage.downloadJSON(uri);
+      const data = await storage.downloadJSON(uri.trim());
       return data as EncryptResponse;
     }),
 });

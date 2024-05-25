@@ -24,7 +24,6 @@ export default function useLitAuth() {
     null
   );
   const { client, authClient, authProvider } = useLitStore();
-  const { mutateAsync } = api.lit.getCapacityDelegationAuthSig.useMutation();
   const upload = api.storage.upload.useMutation();
   const resolve = api.storage.resolve.useMutation();
 
@@ -127,6 +126,7 @@ export default function useLitAuth() {
     const { ciphertext, dataToEncryptHash } = await resolve.mutateAsync({
       uri,
     });
+
     const accessControlConditions = getAccessControlConditions(pkp.ethAddress);
 
     const res = await client.executeJs({
@@ -138,9 +138,7 @@ export default function useLitAuth() {
         dataToEncryptHash,
       },
     });
-
-    const parsed = JSON.parse(res.response);
-    return parsed;
+    return res.response as string;
   };
 
   const handleAuth = useCallback(

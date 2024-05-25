@@ -39,9 +39,6 @@ const CreateForm = () => {
   const { createDID: createPolygonID } = usePolygonID();
   const form = useForm<FormType>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      type: 'key',
-    },
   });
 
   const watchType = form.watch('type');
@@ -79,6 +76,8 @@ const CreateForm = () => {
     } finally {
       form.reset({
         type: 'key',
+        keyType: undefined,
+        alias: undefined,
       });
     }
   };
@@ -103,6 +102,7 @@ const CreateForm = () => {
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
+                    value={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>

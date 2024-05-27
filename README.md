@@ -1,81 +1,143 @@
-# Turborepo starter
+<p align="center">
+<img src="./apps/www/public/logo-text.png" alt="Minesweeper Logo"  width="200px"/></p>
 
-This is an official starter Turborepo.
+Blaze ID is a self-sovereign identity (SSI) wallet solution built on Lit Protocol's programmable key wallets. It supports a variety of Decentralized Identifiers (DIDs) including:
 
-## Using this example
+- **`did:key`** - DIDs based on cryptographic keys
+- **`did:web`** - DIDs associated with web addresses
+- **`did:ethr`** - DIDs linked to Ethereum addresses
+- **`did:polygonid`** - Zero-knowledge proof (ZK) based DIDs
 
-Run the following command:
+Blaze ID enables both ZK-based credential issuance and verification. All data is stored locally first, prioritizing user privacy. Security is ensured through Lit Protocol's Threshold Signature Scheme (TSS) encryption.
 
-```sh
-npx create-turbo@latest
+## Architecture 🏗️
+
+<img src="./assets/architecture.png" alt="Architecture Diagram" />
+
+## How it works 🛠️
+
+### Authentication
+
+Authentication is done through a Lit Protocol's Programmable Key Pair. Users can create a new PKP through WebAuthn Passkeys. Users can use biometric methods such as Face ID or Touch ID to authenticate against their PKPs.
+
+Authentication generates `SessionSigs` which are stored as cookies in the browser. These `SessionSigs` are used to sign transactions and messages on behalf of the user.
+
+### Decentralized Identifiers (DIDs)
+
+Blaze ID supports a variety of DIDs including `did:key`, `did:web`, `did:ethr`, and `did:polygonid`. Users can create new DIDs and associate them with their PKPs.
+
+### Storage
+
+Blaze ID stores all data locally first. This includes DIDs, credentials, and other user data. Data is encrypted using Lit Protocol's Threshold Signature Scheme (TSS) encryption and stored in IndexedDB.
+
+### Credential Issuance
+
+Credentials can be issued via two ways:
+
+1. **ZK-based Issuance**: Credentials are issued using Zero-Knowledge Proofs. This is only available for `did:polygonid` DIDs.
+2. **Standard Issuance**: Credentials are issued using W3 Credential standards. This is available for `did:key`, `did:web`, and `did:ethr` DIDs.
+
+There are two examples located in the Examples page:
+
+1. **KYC Credential**: A Zero-Knowledge Proof based KYC credential which proves that the user is over 18 years old.
+2. **COVID-19 Vaccination Credential**: A standard W3C credential which proves that the user has been vaccinated.
+
+### Credential Verification
+
+Credentials can be verified via two ways:
+
+1. **ZK-based Verification**: This includes `AtomicQuerySigV2`, `StateTransition`, and `AtomicQueryMTPV2` verification methods loaded as wasm modules.
+2. **Standard Verification**: This includes `JWT` verification method.
+
+### Backup and Recovery
+
+Users can backup their data by encrypting it and storing on IPFS using Lit Protocol and recovery by decrypting it using PKPs inside of Lit Actions.
+
+## Demo Video 🎥
+
+## Screenshots 📸
+
+<table>
+  <tr>
+    <td valign="top" width="50%">
+      <br>
+      <img src="./assets/1.jpeg" alt="Homepage" >
+    </td>
+    <td valign="top" width="50%">
+      <br>
+      <img src="./assets/2.jpeg" alt="Create Game" >
+    </td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td valign="top" width="50%">
+      <br>
+            <img src="./assets/3.jpeg" alt="Game Flags" >
+    </td>
+    <td valign="top" width="50%">
+      <br>
+            <img src="./assets/4.jpeg" alt="Game Over" >
+    </td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td valign="top" width="50%">
+      <br>
+            <img src="./assets/5.jpeg" alt="Game Flags" >
+    </td>
+    <td valign="top" width="50%">
+      <br>
+            <img src="./assets/6.jpeg" alt="Game Over" >
+    </td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td valign="top" width="50%">
+      <br>
+            <img src="./assets/7.jpeg" alt="Game Flags" >
+    </td>
+    <td valign="top" width="50%">
+      <br>
+            <img src="./assets/8.jpeg" alt="Game Over" >
+    </td>
+  </tr>
+</table>
+
+## 🧑🏼‍💻 Tech Stack
+
+- **Frontend**: Next.js, Tailwind CSS, shadcn
+- **Integration**: `Lit Protocol`, `@0xpolygonid`, `@simplewebauthn` and `@veramo/core`
+
+## Get Started 🚀
+
+The following repository is a turborepo and divided into the following:
+
+- **apps/www** - The web application built using Next.js.
+
+First install the dependencies by running the following:
+
+```
+pnpm install
 ```
 
-## What's inside?
+Then fill in the Environment variables in `apps/www/.env.local`
 
-This Turborepo includes the following packages/apps:
-
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm build
+```env
+IRON_SESSION_PASSWORD="secure_password_for_sessions"
+NEXT_PUBLIC_WALLETCONNECT_ID="walletconnect_project_ir"
+CAPACITY_CREDITS_PK="wallet_private_key_to_delegate_capacity_credits"
+ALCHEMY_RPC_URL="alchemy_eth_mainnet_rpc_url"
+TW_SECRET_KEY="your_thirdweb_secret_key_for_ipfs_uploads"
 ```
 
-### Develop
-
-To develop all apps and packages, run the following command:
+Finally, run the following command to start the application:
 
 ```
-cd my-turborepo
 pnpm dev
 ```
-
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)

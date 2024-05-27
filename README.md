@@ -1,5 +1,5 @@
 <p align="center">
-<img src="./apps/www/public/logo-text.png" alt="Minesweeper Logo"  width="200px"/></p>
+<img src="./assets/logo-text.png" alt="Minesweeper Logo"  width="200px"/></p>
 
 Blaze ID is a self-sovereign identity (SSI) wallet solution built on Lit Protocol's programmable key wallets. It supports a variety of Decentralized Identifiers (DIDs) including:
 

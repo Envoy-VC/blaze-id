@@ -30,7 +30,9 @@ export const getKYCAgeCredential = (
 };
 
 export const getKYCAgeProofRequest = () => {
-  const required = Date.now() - 18 * 365 * 24 * 60 * 60 * 1000;
+  const required = Math.round(
+    (Date.now() - 18 * 365 * 24 * 60 * 60 * 1000) / 1000
+  );
   const req: ZeroKnowledgeProofRequest = {
     id: 1,
     circuitId: CircuitId.AtomicQuerySigV2,

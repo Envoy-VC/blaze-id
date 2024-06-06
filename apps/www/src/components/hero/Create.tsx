@@ -20,7 +20,7 @@ const Create = () => {
       <div className='flex flex-col items-center justify-center gap-2 sm:flex-row'>
         <Input
           placeholder='Username'
-          className='w-[300px] rounded-full text-black'
+          className='w-[300px] rounded-full !text-black'
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           autoCorrect='false'

@@ -2235,20 +2235,21 @@ packages:
     dev: false
     optional: true
 
-  /@digitalcredentials/ed25519-signature-2020@4.0.0(expo-crypto@13.0.2)(expo@51.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+  /@digitalcredentials/ed25519-signature-2020@4.0.0(expo-crypto@13.0.2)(expo@51.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)(react-native@0.74.0):
     resolution: {integrity: sha512-xdmtgmp7OYnc9imXzA2IJjkLmY28e9oCL0UshEMF9vljcPnkfAWvi9wrfXyOoFVdszxVNivF7U/q0u1PbQ7gfA==}
     engines: {node: '>=14'}
     requiresBuild: true
     dependencies:
       '@digitalcredentials/base58-universal': 1.0.1
       '@digitalcredentials/ed25519-verification-key-2020': 3.2.2
-      '@digitalcredentials/jsonld-signatures': 10.0.1(expo-crypto@13.0.2)(expo@51.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@digitalcredentials/jsonld-signatures': 10.0.1(expo-crypto@13.0.2)(expo@51.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)(react-native@0.74.0)
       ed25519-signature-2018-context: 1.1.0
       ed25519-signature-2020-context: 1.1.0
     transitivePeerDependencies:
       - expo
       - expo-crypto
       - msrcrypto
+      - react-native
       - react-native-securerandom
     dev: false
     optional: true
@@ -2289,7 +2290,7 @@ packages:
     dev: false
     optional: true
 
-  /@digitalcredentials/jsonld-signatures@10.0.1(expo-crypto@13.0.2)(expo@51.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+  /@digitalcredentials/jsonld-signatures@10.0.1(expo-crypto@13.0.2)(expo@51.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)(react-native@0.74.0):
     resolution: {integrity: sha512-r7yx25SUkyzX7ZGnvzZCtoMH+udbhM3VnHN0rcLv/PW57mpj3lf1lYdu+7Hl24L26H+mUD42otCg4sbVLaZl8Q==}
     engines: {node: '>=18'}
     requiresBuild: true
@@ -2297,12 +2298,13 @@ packages:
       '@digitalbazaar/security-context': 1.0.1
       '@sphereon/isomorphic-webcrypto': 2.4.0-unstable.4(expo-crypto@13.0.2)(expo@51.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       fast-text-encoding: 1.0.6
-      jsonld: github.com/digitalcredentials/jsonld.js/17f2c35f85d176231d9c8620d39144e845c15e91
+      jsonld: git@github.com+digitalcredentials/jsonld.js/afa0062460b987bd42887b3a294cf0e0a0e5bde7(expo@51.0.8)(react-native@0.74.0)
       serialize-error: 8.1.0
     transitivePeerDependencies:
       - expo
       - expo-crypto
       - msrcrypto
+      - react-native
       - react-native-securerandom
     dev: false
     optional: true
@@ -2385,21 +2387,22 @@ packages:
     dev: false
     optional: true
 
-  /@digitalcredentials/vc@7.0.0(expo-crypto@13.0.2)(expo@51.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+  /@digitalcredentials/vc@7.0.0(expo-crypto@13.0.2)(expo@51.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)(react-native@0.74.0):
     resolution: {integrity: sha512-CgjUOqU2VWanbcKUA8L50/72O8rTtCtOY9indMwRIUgFgWkdY4wT89UTWs5QG3SGimXJsbjzKhVJ67VahPxg+Q==}
     engines: {node: '>=12'}
     requiresBuild: true
     dependencies:
-      '@digitalcredentials/ed25519-signature-2020': 4.0.0(expo-crypto@13.0.2)(expo@51.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@digitalcredentials/jsonld-signatures': 10.0.1(expo-crypto@13.0.2)(expo@51.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@digitalcredentials/ed25519-signature-2020': 4.0.0(expo-crypto@13.0.2)(expo@51.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)(react-native@0.74.0)
+      '@digitalcredentials/jsonld-signatures': 10.0.1(expo-crypto@13.0.2)(expo@51.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)(react-native@0.74.0)
       '@digitalcredentials/open-badges-context': 2.1.0
       credentials-context: 2.0.0
       fix-esm: 1.0.1
-      jsonld: github.com/digitalcredentials/jsonld.js/17f2c35f85d176231d9c8620d39144e845c15e91
+      jsonld: git@github.com+digitalcredentials/jsonld.js/afa0062460b987bd42887b3a294cf0e0a0e5bde7(expo@51.0.8)(react-native@0.74.0)
     transitivePeerDependencies:
       - expo
       - expo-crypto
       - msrcrypto
+      - react-native
       - react-native-securerandom
       - supports-color
     dev: false
@@ -5853,7 +5856,7 @@ packages:
       chalk: 4.1.2
       execa: 5.1.1
       fast-glob: 3.3.2
-      fast-xml-parser: 4.3.6
+      fast-xml-parser: 4.4.1
       logkitty: 0.7.1
     transitivePeerDependencies:
       - encoding
@@ -5867,7 +5870,7 @@ packages:
       chalk: 4.1.2
       execa: 5.1.1
       fast-glob: 3.3.2
-      fast-xml-parser: 4.3.6
+      fast-xml-parser: 4.4.1
       ora: 5.4.1
     transitivePeerDependencies:
       - encoding
@@ -7498,15 +7501,15 @@ packages:
     resolution: {integrity: sha512-YKJ8o6SgG/xYPrMbRTkhiwxdLbeRSyFha+5o6kWBDu/VbgEhGF1bWFq2pWKYc6/zRYAz6q4kol45ryfY76mH2g==}
     requiresBuild: true
     dependencies:
-      '@digitalcredentials/ed25519-signature-2020': 4.0.0(expo-crypto@13.0.2)(expo@51.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@digitalcredentials/ed25519-signature-2020': 4.0.0(expo-crypto@13.0.2)(expo@51.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)(react-native@0.74.0)
       '@digitalcredentials/ed25519-verification-key-2020': 4.0.0
       '@digitalcredentials/jsonld': 6.0.0(expo@51.0.8)(react-native@0.74.0)
-      '@digitalcredentials/jsonld-signatures': 10.0.1(expo-crypto@13.0.2)(expo@51.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@digitalcredentials/vc': 7.0.0(expo-crypto@13.0.2)(expo@51.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@digitalcredentials/jsonld-signatures': 10.0.1(expo-crypto@13.0.2)(expo@51.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)(react-native@0.74.0)
+      '@digitalcredentials/vc': 7.0.0(expo-crypto@13.0.2)(expo@51.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)(react-native@0.74.0)
       '@transmute/credentials-context': 0.7.0-unstable.82
       '@transmute/ed25519-signature-2018': 0.7.0-unstable.82
       '@transmute/json-web-signature': 0.7.0-unstable.82
-      '@veramo-community/lds-ecdsa-secp256k1-recovery2020': github.com/uport-project/EcdsaSecp256k1RecoverySignature2020/ab0db52de6f4e6663ef271a48009ba26e688ef9b(expo@51.0.8)(react-native@0.74.0)
+      '@veramo-community/lds-ecdsa-secp256k1-recovery2020': git@github.com+uport-project/EcdsaSecp256k1RecoverySignature2020/ab0db52de6f4e6663ef271a48009ba26e688ef9b(expo@51.0.8)(react-native@0.74.0)
       '@veramo/core-types': 6.0.0
       '@veramo/utils': 6.0.0
       cross-fetch: 4.0.0
@@ -11050,8 +11053,8 @@ packages:
     dev: false
     optional: true
 
-  /fast-xml-parser@4.3.6:
-    resolution: {integrity: sha512-M2SovcRxD4+vC493Uc2GZVcZaj66CCJhWurC4viynVSTvrpErCShNcDz1lAho6n9REQKvL/ll4A4/fw6Y9z8nw==}
+  /fast-xml-parser@4.4.1:
+    resolution: {integrity: sha512-xkjOecfnKGkSsOwtZ5Pz7Us/T6mrbPQrq0nh+aCO5V9nk5NLWmasAHumTKjiPJPWANe+kAZ84Jc8ooJkzZ88Sw==}
     hasBin: true
     dependencies:
       strnum: 1.0.5
@@ -11523,6 +11526,7 @@ packages:
 
   /glob@6.0.4:
     resolution: {integrity: sha512-MKZeRNyYZAVVVG1oZeLaWie1uweH40m9AZwIwxyPbTSX4hHrVYSzLg0Ro5Z5R7XKkIX+Cc6oD1rqeDJnwsB8/A==}
+    deprecated: Glob versions prior to v9 are no longer supported
     requiresBuild: true
     dependencies:
       inflight: 1.0.6
@@ -11535,6 +11539,7 @@ packages:
 
   /glob@7.1.6:
     resolution: {integrity: sha512-LwaxwyZ72Lk7vZINtNNrywX0ZuLyStrdDtabefZKAY5ZGJhVtgdznluResxNmPitE0SAO+O26sWTHeKSI2wMBA==}
+    deprecated: Glob versions prior to v9 are no longer supported
     dependencies:
       fs.realpath: 1.0.0
       inflight: 1.0.6
@@ -15444,6 +15449,7 @@ packages:
 
   /rimraf@2.4.5:
     resolution: {integrity: sha512-J5xnxTyqaiw06JjMftq7L9ouA448dw/E7dKghkP9WpKNuwmARNNg+Gk8/u5ryb9N/Yo2+z3MCwuqFK/+qPOPfQ==}
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
     requiresBuild: true
     dependencies:
@@ -15453,6 +15459,7 @@ packages:
 
   /rimraf@2.6.3:
     resolution: {integrity: sha512-mwqeW5XsA2qAejG46gYdENaxXjx9onRNCfn7L0duuP4hCuTIi/QO7PDK07KJfp1d+izWPrzEJDcSqBa0OZQriA==}
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
     dependencies:
       glob: 7.2.3
@@ -17695,23 +17702,28 @@ packages:
       use-sync-external-store: 1.2.0(react@18.2.0)
     dev: false
 
-  github.com/digitalcredentials/jsonld.js/17f2c35f85d176231d9c8620d39144e845c15e91:
-    resolution: {tarball: https://codeload.github.com/digitalcredentials/jsonld.js/tar.gz/17f2c35f85d176231d9c8620d39144e845c15e91}
+  git@github.com+digitalcredentials/jsonld.js/afa0062460b987bd42887b3a294cf0e0a0e5bde7(expo@51.0.8)(react-native@0.74.0):
+    resolution: {commit: afa0062460b987bd42887b3a294cf0e0a0e5bde7, repo: git@github.com:digitalcredentials/jsonld.js.git, type: git}
+    id: git@github.com+digitalcredentials/jsonld.js/afa0062460b987bd42887b3a294cf0e0a0e5bde7
     name: jsonld
     version: 8.3.3-0
     engines: {node: '>=14'}
     requiresBuild: true
     dependencies:
       '@digitalbazaar/http-client': 4.1.1
+      '@digitalcredentials/rdf-canonize': 1.0.0(expo@51.0.8)(react-native@0.74.0)
       canonicalize: 1.0.8
       lru-cache: 6.0.0
       rdf-canonize: 4.0.1
+    transitivePeerDependencies:
+      - expo
+      - react-native
     dev: false
     optional: true
 
-  github.com/uport-project/EcdsaSecp256k1RecoverySignature2020/ab0db52de6f4e6663ef271a48009ba26e688ef9b(expo@51.0.8)(react-native@0.74.0):
-    resolution: {tarball: https://codeload.github.com/uport-project/EcdsaSecp256k1RecoverySignature2020/tar.gz/ab0db52de6f4e6663ef271a48009ba26e688ef9b}
-    id: github.com/uport-project/EcdsaSecp256k1RecoverySignature2020/ab0db52de6f4e6663ef271a48009ba26e688ef9b
+  git@github.com+uport-project/EcdsaSecp256k1RecoverySignature2020/ab0db52de6f4e6663ef271a48009ba26e688ef9b(expo@51.0.8)(react-native@0.74.0):
+    resolution: {commit: ab0db52de6f4e6663ef271a48009ba26e688ef9b, repo: git@github.com:uport-project/EcdsaSecp256k1RecoverySignature2020.git, type: git}
+    id: git@github.com+uport-project/EcdsaSecp256k1RecoverySignature2020/ab0db52de6f4e6663ef271a48009ba26e688ef9b
     name: '@veramo-community/lds-ecdsa-secp256k1-recovery2020'
     version: 0.0.8
     requiresBuild: true

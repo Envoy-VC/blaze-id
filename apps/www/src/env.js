@@ -3,15 +3,10 @@ import { z } from 'zod';
 
 export const env = createEnv({
   server: {
-    IRON_SESSION_PASSWORD: z.string().min(1),
     NODE_ENV: z.enum(['development', 'test', 'production']),
   },
-  client: {
-    NEXT_PUBLIC_WALLETCONNECT_ID: z.string().min(1),
-  },
-  experimental__runtimeEnv: {
-    NEXT_PUBLIC_WALLETCONNECT_ID: process.env.NEXT_PUBLIC_WALLETCONNECT_ID,
-  },
+  client: {},
+  experimental__runtimeEnv: {},
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
   emptyStringAsUndefined: true,
 });

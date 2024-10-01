@@ -1,7 +1,6 @@
 import React from 'react';
 
 import Navbar from '../Navbar';
-import Create from './Create';
 
 const Hero = () => {
   return (
@@ -17,7 +16,6 @@ const Hero = () => {
         with secure MPC (multi-party computation) wallets that eliminate private
         key exposure.
       </p>
-      <Create />
     </div>
   );
 };

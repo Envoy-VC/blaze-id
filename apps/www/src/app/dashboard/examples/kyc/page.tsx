@@ -1,7 +1,10 @@
+import dynamic from 'next/dynamic';
+
 import React from 'react';
 
 import { Header } from '../../components';
-import KYCForm from '../components/KYCForm';
+
+const KYCForm = dynamic(() => import('../components/KYCForm'), { ssr: false });
 
 const KYCCredentialPage = () => {
   return (

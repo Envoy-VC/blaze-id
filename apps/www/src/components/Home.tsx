@@ -1,12 +1,11 @@
 import React from 'react';
 
-import { useLitAuth, usePolygonID, useVeramo } from '~/lib/hooks';
+import { usePolygonID, useVeramo } from '~/lib/hooks';
 
 import Navbar from './Navbar';
 import { Button } from './ui/button';
 
 const HomeComponent = () => {
-  const { authWithPasskey } = useLitAuth();
   const { createDID, createCredential } = useVeramo();
   const { createDID: createPolygonIDDID } = usePolygonID();
 
@@ -67,14 +66,6 @@ const HomeComponent = () => {
           }}
         >
           Create Polygon DID
-        </Button>
-        <Button
-          onClick={async () => {
-            const res = await authWithPasskey();
-            console.log(res);
-          }}
-        >
-          Auth With Passkey
         </Button>
       </div>
     </div>

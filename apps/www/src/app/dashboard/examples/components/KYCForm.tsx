@@ -123,16 +123,13 @@ const KYCForm = () => {
                   <PopoverContent className='w-auto p-0' align='start'>
                     <Calendar
                       mode='single'
-                      toDate={new Date(Date.now())}
-                      toMonth={new Date(Date.now())}
-                      toYear={2023}
-                      fromDate={new Date('01-01-1900')}
-                      fromMonth={new Date('01-01-1900')}
-                      fromYear={1900}
-                      captionLayout='dropdown'
+                      hidden={{
+                        after: new Date(Date.now()),
+                        before: new Date('01-01-1900'),
+                      }}
+                      captionLayout='dropdown-years'
                       selected={field.value}
                       onSelect={field.onChange}
-                      initialFocus
                     />
                   </PopoverContent>
                 </Popover>
@@ -169,17 +166,13 @@ const KYCForm = () => {
                   <PopoverContent className='w-auto p-0' align='start'>
                     <Calendar
                       mode='single'
-                      fromDate={new Date(Date.now())}
-                      fromMonth={new Date(Date.now())}
-                      fromYear={2022}
-                      toDate={new Date('01-01-2200')}
-                      toMonth={new Date('01-01-2200')}
-                      toYear={2200}
-                      captionLayout='dropdown'
+                      hidden={{
+                        after: new Date(Date.now()),
+                        before: new Date('01-01-1900'),
+                      }}
                       selected={field.value}
                       onSelect={field.onChange}
                       disabled={(date) => date < new Date()}
-                      initialFocus
                     />
                   </PopoverContent>
                 </Popover>

@@ -1,12 +1,17 @@
+import dynamic from 'next/dynamic';
+
 import React from 'react';
 
 import { Header } from '../components';
-import { CreateForm } from './components';
+
+const CreateForm = dynamic(() => import('./components/CreateForm'), {
+  ssr: false,
+});
 
 const CreateIdentifier = () => {
   return (
     <div className='p-4'>
-      <Header title='Create Identifier' />
+      {/* <Header title='Create Identifier' /> */}
       <CreateForm />
     </div>
   );

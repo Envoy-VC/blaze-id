@@ -6,9 +6,15 @@ import React from 'react';
 import { Button } from '~/components/ui/button';
 
 import { Header } from '../components';
-import AddCredential from './components/AddCredential';
 
-const CredentialsTable = dynamic(() => import('./components/CredentialsTable'));
+const AddCredential = dynamic(() => import('./components/AddCredential'), {
+  ssr: false,
+});
+
+const CredentialsTable = dynamic(
+  () => import('./components/CredentialsTable'),
+  { ssr: false }
+);
 
 const Dashboard = () => {
   return (

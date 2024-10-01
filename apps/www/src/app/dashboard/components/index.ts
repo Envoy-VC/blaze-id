@@ -1,6 +1,5 @@
 import Header from './Header';
 import Navbar from './Navbar';
-import SessionWrapper from './SessionWrapper';
 import Sidebar from './Sidebar';
 
-export { Sidebar, SessionWrapper, Navbar, Header };
+export { Sidebar, Navbar, Header };

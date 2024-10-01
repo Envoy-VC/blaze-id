@@ -1,7 +1,12 @@
+import dynamic from 'next/dynamic';
+
 import React from 'react';
 
 import { Header } from '../../components';
-import CovidForm from '../components/CovidForm';
+
+const CovidForm = dynamic(() => import('../components/CovidForm'), {
+  ssr: false,
+});
 
 const CovidCredentialPage = () => {
   return (

@@ -1,6 +1,5 @@
 import useBlazeID from './useBlazeID';
-import useLitAuth from './useLitAuth';
 import usePolygonID from './usePolygonID';
 import useVeramo from './useVeramo';
 
-export { useLitAuth, useVeramo, usePolygonID, useBlazeID };
+export { useVeramo, usePolygonID, useBlazeID };

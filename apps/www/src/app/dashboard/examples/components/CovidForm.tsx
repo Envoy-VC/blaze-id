@@ -217,16 +217,15 @@ const CovidForm = () => {
                   <PopoverContent className='w-auto p-0' align='start'>
                     <Calendar
                       mode='single'
-                      toDate={new Date(Date.now())}
-                      toMonth={new Date(Date.now())}
-                      toYear={2023}
-                      fromDate={new Date('01-01-2020')}
-                      fromMonth={new Date('01-01-2020')}
-                      fromYear={2020}
-                      captionLayout='dropdown'
+                      hidden={{
+                        after: new Date(Date.now()),
+                        before: new Date('01-01-1900'),
+                      }}
+                      endMonth={new Date(Date.now())}
+                      startMonth={new Date('01-01-2020')}
+                      captionLayout='dropdown-years'
                       selected={field.value}
                       onSelect={field.onChange}
-                      initialFocus
                     />
                   </PopoverContent>
                 </Popover>
@@ -265,16 +264,15 @@ const CovidForm = () => {
                   <PopoverContent className='w-auto p-0' align='start'>
                     <Calendar
                       mode='single'
-                      fromDate={new Date(Date.now())}
-                      fromMonth={new Date(Date.now())}
-                      fromYear={2023}
-                      toDate={new Date('01-01-2050')}
-                      toMonth={new Date('01-01-2050')}
-                      toYear={2050}
-                      captionLayout='dropdown'
+                      hidden={{
+                        after: new Date(Date.now()),
+                        before: new Date('01-01-2020'),
+                      }}
+                      startMonth={new Date(Date.now())}
+                      endMonth={new Date('01-01-2050')}
+                      captionLayout='dropdown-years'
                       selected={field.value}
                       onSelect={field.onChange}
-                      initialFocus
                     />
                   </PopoverContent>
                 </Popover>

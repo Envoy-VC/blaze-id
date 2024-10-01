@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { getSession } from '~/lib/iron-session';
 import { truncate } from '~/lib/utils';
 
 import { Button } from '~/components/ui/button';
@@ -8,11 +7,10 @@ import { Button } from '~/components/ui/button';
 import SelectDID from './SelectDID';
 
 const Navbar = async () => {
-  const session = await getSession();
   return (
     <div className='flex h-[10dvh] flex-row items-center justify-between border-b px-4 py-2 sm:h-[7dvh]'>
       <SelectDID />
-      <AccountButton username={session.pkp.ethAddress} />
+      <AccountButton username={''} />
     </div>
   );
 };
